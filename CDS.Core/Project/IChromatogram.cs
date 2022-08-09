@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Core.Model
+namespace CDS.Core
 {
-    public interface ISignalSet
+    public interface IChromatogram
     {
+
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Core.Model
+namespace CDS.Core
 {
     public enum DeviceStatus
     {
@@ -21,9 +21,5 @@ namespace CDS.Core.Model
     public interface IDeviceState
     {
         DeviceStatus Status { get; set; }
-        object Inform { get; set; }
-        object Configuration { get; set; }
-        object Method { get; set; }
-        object Monitor { get; set; }
     }
 }

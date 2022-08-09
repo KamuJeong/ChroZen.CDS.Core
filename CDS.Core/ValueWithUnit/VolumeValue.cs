@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Core.Model
+namespace CDS.Core
 {
     public class VolumeValue : ValueWithUnit
     {
-        private static Dictionary<string, double> VolumeUnits = new()
+        private static Dictionary<string, double> Units = new()
         { 
              ["L"] = 1.0,
              ["mL"] = 1_000.0,
@@ -17,13 +17,13 @@ namespace CDS.Core.Model
 
         public VolumeValue(string input) : base(input)
         {
-            if(!VolumeUnits.Keys.Contains(Unit))
+            if(!Units.Keys.Contains(Unit))
                 throw new ArgumentException("Invalid unit");
         }
 
         public VolumeValue(double value, string? unit) : base(value, unit)
         {
-            if (!VolumeUnits.Keys.Contains(Unit))
+            if (!Units.Keys.Contains(Unit))
                 throw new ArgumentException("Invalid unit");
         }
 
@@ -34,10 +34,10 @@ namespace CDS.Core.Model
             if (Unit == unit)
                 return this;
 
-            if (!VolumeUnits.ContainsKey(unit))
+            if (!Units.ContainsKey(unit))
                 throw new ArgumentException("Invalid unit");
 
-            return new VolumeValue(Value / VolumeUnits[Unit] * VolumeUnits[unit], unit);
+            return new VolumeValue(Value / Units[Unit] * Units[unit], unit);
         }
     }
 }

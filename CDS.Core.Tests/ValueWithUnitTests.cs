@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CDS.Core.Model;
+using CDS.Core;
 
-namespace CDS.Core.Model.Tests
+namespace CDS.Core.Tests
 {
     [TestClass]
     public class ValueWithUnitTests
@@ -65,6 +65,17 @@ namespace CDS.Core.Model.Tests
 
             Assert.AreEqual(2000, v2.Value);
             Assert.AreEqual("mL", v2.Unit);
+            Assert.AreEqual(v1, v2);
+        }
+
+        [TestMethod]
+        public void ConvertTimeValue()
+        {
+            var v1 = new TimeValue("2h");
+            var v2 = v1.Convert("min");
+
+            Assert.AreEqual(120, v2.Value);
+            Assert.AreEqual("min", v2.Unit);
             Assert.AreEqual(v1, v2);
         }
     }

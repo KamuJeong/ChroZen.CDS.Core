@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Core.Model
+namespace CDS.Core
 {
     public enum InstrumentStatus
     {
@@ -21,7 +21,7 @@ namespace CDS.Core.Model
     public interface IInstrumentState
     {
         InstrumentStatus Status { get; set; }
-        IMethod Method { get; set; }
+        IMethod? Method { get; set; }
         IProject? Project { get; set; }
         IChromatogram? Chromatogram { get; set; }
     }

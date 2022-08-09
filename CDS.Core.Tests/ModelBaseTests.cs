@@ -1,8 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CDS.Core.Model;
+using CDS.Core;
 using System.Linq;
 
-namespace CDS.Core.Model.Tests
+namespace CDS.Core.Tests
 {
     [TestClass]
     public class ModelBaseTests

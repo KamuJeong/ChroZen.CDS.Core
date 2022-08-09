@@ -1,4 +1,4 @@
-﻿namespace CDS.Core.Model
+﻿namespace CDS.Core
 {
     public class ModelBase
     {

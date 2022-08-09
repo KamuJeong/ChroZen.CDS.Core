@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Core.Model
+namespace CDS.Core
 {
     public interface ISolution
     {
@@ -13,6 +13,6 @@ namespace CDS.Core.Model
         IEnumerable<ISample> Samples { get; }
         IEnumerable<IMethod> Methods { get; }
         IEnumerable<IProject> Projects { get; }
-        IReport Report { get; }
+        IReport? Report { get; set; }
     }
 }

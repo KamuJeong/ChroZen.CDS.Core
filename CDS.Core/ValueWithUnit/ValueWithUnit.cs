@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace CDS.Core.Model
+namespace CDS.Core
 {
     public class ValueWithUnit : IEquatable<ValueWithUnit>, IComparable<ValueWithUnit>
     {

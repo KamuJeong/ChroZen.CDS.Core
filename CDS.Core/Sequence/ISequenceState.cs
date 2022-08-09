@@ -1,4 +1,4 @@
-﻿namespace CDS.Core.Model
+﻿namespace CDS.Core
 {
     public enum SequenceStatus
     {
@@ -14,6 +14,6 @@
     {
         SequenceStatus Status { get; set; }
         int Counter { get; set; }
-        IEnumerable<IChromatogram> Chromatograms { get; }
+        IEnumerable<IChromatogram> Chromatograms { get; init; }
     }
 }
