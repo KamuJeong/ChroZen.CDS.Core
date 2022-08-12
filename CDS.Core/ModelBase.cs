@@ -76,26 +76,26 @@
             }
         }
 
-        public IEnumerable<ModelBase> FindChildren<T>(string? name)
+        public IEnumerable<T> FindChildren<T>(string? name)  where T : class
         {
             foreach (var child in children)
             {
-                if (child is T && (name == null || string.Equals(child.Name, name, StringComparison.OrdinalIgnoreCase)))
+                if (child is T t && (name == null || string.Equals(child.Name, name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    yield return child;
+                    yield return t;
                 }
             }
         }
 
-        public IEnumerable<ModelBase> FindChildrenRecursively<T>(string? name)
+        public IEnumerable<T> FindChildrenRecursively<T>(string? name) where T : class
         {
             foreach (var child in children)
             {
-                if (child is T &&  (name == null  || string.Equals(child.Name, name, StringComparison.OrdinalIgnoreCase)))
+                if (child is T t &&  (name == null  || string.Equals(child.Name, name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    yield return child;
+                    yield return t;
                 }
-                foreach (var grand in child.FindChildren<T>(name))
+                foreach (var grand in child.FindChildrenRecursively<T>(name))
                 {
                     yield return grand;
                 }

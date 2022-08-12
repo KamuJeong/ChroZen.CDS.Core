@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Model\CDS.Core.csproj" />
+    <ProjectReference Include="..\CDS.Core\CDS.Core.csproj" />
   </ItemGroup>
 
 </Project>

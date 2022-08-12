@@ -20,9 +20,11 @@ namespace CDS.Core
 
     public interface IInstrumentState
     {
-        InstrumentStatus Status { get; set; }
+        InstrumentStatus Status { get; }
         IMethod? Method { get; set; }
         IProject? Project { get; set; }
         IChromatogram? Chromatogram { get; set; }
+
+        TimeSpan ElapsedTime { get; }
     }
 }

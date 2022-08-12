@@ -9,13 +9,5 @@ namespace CDS.Core
 {
     public interface IDevice
     {
-        IDeviceState State { get; init; }
-
-        Uri Uri { get; set; }
-
-        Task<bool> ConnectAsync();
-        void Disconnect();
-
-        Task<object?> GetMethodAsync();
     }
 }

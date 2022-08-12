@@ -2,20 +2,15 @@
 {
     public interface IInstrument
     {
-        IInstrumentState State { get; init; }
+        IInstrumentState State { get; }
+
         IEnumerable<IDevice> Devices { get; }
         IEnumerable<ISignalSet> Signals { get; }
 
-        Task<bool> ConnectAsync();
-        void Disconnect();
-
-        Task<bool> LoadMethodAsync();
-        Task<bool> SendMethodAsync(IMethod method);
-
-        bool Ready();
-        bool Run();
-        bool Stop();
-        bool Halt();
-        bool Reset();
+        void Ready();
+        void PreRun();
+        void Run();
+        void Stop();
+        void Halt();
     }
 }
