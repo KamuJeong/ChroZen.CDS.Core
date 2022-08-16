@@ -21,6 +21,11 @@ namespace CDS.Core
     public interface IInstrumentState
     {
         InstrumentStatus Status { get; }
+        bool IsSingleShot { get; }
+        bool StopReserved { get; }
+        bool HaltReserved { get; }
+        bool HaltAfterLastSequence { get; }
+
         IMethod? Method { get; set; }
         IProject? Project { get; set; }
         IChromatogram? Chromatogram { get; set; }

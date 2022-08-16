@@ -18,28 +18,58 @@ namespace CDS.Instrument
 
             if (sender is Device device)
             {
-                if (State.Status == InstrumentStatus.NotReady && device.State.Status == DeviceStatus.Ready)
+                if (device.State.Status == DeviceStatus.Error)
+                {
+                    foreach (var d in Devices)
+                        d.Halt();
+
+                    ChangeStatus(InstrumentStatus.Error);
+                } 
+                else if (State.Status == InstrumentStatus.NotReady && device.State.Status == DeviceStatus.Ready)
                 {
                     if (Devices.All(d => d.State.Status == DeviceStatus.Ready))
                     {
                         ChangeStatus(InstrumentStatus.Ready);
                     }
                 }
-                else if(device.State.Status == DeviceStatus.Error)
+                else if(State.Status == InstrumentStatus.Run)
                 {
-                    foreach (var d in Devices)
-                        d.Halt();
-
-                    ChangeStatus(InstrumentStatus.Error);
+                    if (Devices.All(d => d.State.Status != DeviceStatus.Run))
+                    {
+                        PostRun();
+                    }
+                }
+                else if (State.Status == InstrumentStatus.PostRun)
+                {
+                    if (Devices.All(d => d.State.Status != DeviceStatus.PostRun))
+                    {
+                        PostWork();
+                    }
+                }
+                else if (State.Status == InstrumentStatus.PostWork)
+                {
+                    if (Devices.All(d => d.State.Status != DeviceStatus.PostWork))
+                    {
+                        NextInjectOrFinish();
+                    }
                 }
             }
         }
+
         private void ChangeStatus(InstrumentStatus status)
         {
             if(status != State.Status)
             {
                 State.Status = status;
                 InvokeStatusChangedEvent(this);
+
+                if(status == InstrumentStatus.NotReady)
+                {
+                    State.IsSingleShot = true;
+                    State.StopReserved = false;
+                    State.HaltReserved = false;
+                    State.HaltAfterLastSequence = false;
+                }
             }
         }
 
@@ -98,22 +128,30 @@ namespace CDS.Instrument
         {
             if (new[] { InstrumentStatus.NotReady, InstrumentStatus.Ready, InstrumentStatus.PostWork }.Contains(State.Status))
             {
-                // Sequence의 StatusChanged 이벤트 핸들러에서 Instrument.State를 셋팅함
-                ChangeStatus(InstrumentStatus.PreRun);  
+                // In the StatusChanged event handler of Sequence
+                // if there are no more items, Invoke Stop() or Halt()
+                ChangeStatus(InstrumentStatus.PreRun);
+                State.IsSingleShot = false;
 
-                SendMethod();
+                if (State.Status == InstrumentStatus.PreRun)
+                {
+                    SendMethod();
 
-                foreach (var d in Devices)
-                    d.PreRun();
-
-                if (!Devices.Any(d => d.State.Status == DeviceStatus.PreRun))
-                    ChangeStatus(InstrumentStatus.NotReady);
+                    foreach (var d in Devices)
+                        d.PreRun();
+                }
             }
         }
 
-        private void SendMethod()
+        private async void SendMethod()
         {
-            throw new NotImplementedException();
+            foreach (var d in Devices)
+            {
+                if(d.SetMethod(State.Method))
+                {
+                    await d.SendMethodAsync();
+                }
+            }
         }
 
         public void Run()
@@ -164,6 +202,27 @@ namespace CDS.Instrument
 
                 foreach (var d in Devices)
                     d.PostWork();
+
+                NextInjectOrFinish();
+            }
+        }
+
+        private void NextInjectOrFinish()
+        {
+            if (State.Status == InstrumentStatus.PostWork && !Devices.Any(d => d.State.Status == DeviceStatus.PostWork))
+            {
+                if(State.HaltReserved)
+                {
+                    Halt();
+                }
+                else if(State.IsSingleShot || State.StopReserved)
+                {
+                    Stop();
+                }
+                else
+                {
+                    PreRun();
+                }
             }
         }
 

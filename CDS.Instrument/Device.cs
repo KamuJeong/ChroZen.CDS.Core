@@ -13,7 +13,7 @@ namespace CDS.Instrument
         {
         }
 
-        public abstract IDeviceState State { get; init; }
+        public abstract DeviceState State { get; init; }
         protected void ChangeStatus(DeviceStatus status)
         {
             if(State.Status != status)
@@ -27,16 +27,19 @@ namespace CDS.Instrument
         public abstract Task<bool> ConnectAsync();
         public abstract void Disconnect();
 
-        public abstract Task<object?> GetMethodAsync();
+        public abstract bool SetMethod(IMethod? method);
+        public abstract void GetMethod(IMethod? method);
+        internal abstract Task<bool> SendMethodAsync();
+        internal abstract Task<bool> LoadMethodAsync();
 
-        public abstract bool Ready();
-        public abstract bool PreRun();
-        public abstract bool Run();
-        public abstract bool PostRun();
-        public abstract bool PostWork();
+        internal abstract bool Ready();
+        internal abstract bool PreRun();
+        internal abstract bool Run();
+        internal abstract bool PostRun();
+        internal abstract bool PostWork();
 
-        public abstract void Stop();
-        public abstract void Halt();
-        public abstract void Reset();
+        internal abstract void Stop();
+        internal abstract void Halt();
+        internal abstract void Reset();
     }
 }

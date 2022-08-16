@@ -9,5 +9,8 @@ namespace CDS.Core
 {
     public interface IDevice
     {
+        Uri? Uri { get; }
+
+        
     }
 }

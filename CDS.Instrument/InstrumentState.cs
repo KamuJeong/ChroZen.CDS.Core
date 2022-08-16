@@ -11,5 +11,9 @@ namespace CDS.Instrument
         public IChromatogram? Chromatogram { get; set; }
 
         public TimeSpan ElapsedTime => TimeSpan.Zero;
+        public bool IsSingleShot { get; internal set; }
+        public bool StopReserved { get; set; }
+        public bool HaltReserved { get; set; }
+        public bool HaltAfterLastSequence { get; set; }
     }
 }

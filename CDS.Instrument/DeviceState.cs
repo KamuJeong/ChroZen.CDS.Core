@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Core
+namespace CDS.Instrument
 {
     public enum DeviceStatus
     {
@@ -18,8 +18,8 @@ namespace CDS.Core
         Error,
     }
 
-    public interface IDeviceState
+    public class DeviceState
     {
-        DeviceStatus Status { get; set; }
+        public DeviceStatus Status { get; internal set; }
     }
 }
