@@ -131,10 +131,11 @@ namespace CDS.Instrument
                 // In the StatusChanged event handler of Sequence
                 // if there are no more items, Invoke Stop() or Halt()
                 ChangeStatus(InstrumentStatus.PreRun);
-                State.IsSingleShot = false;
 
                 if (State.Status == InstrumentStatus.PreRun)
                 {
+                    State.IsSingleShot = false;
+
                     SendMethod();
 
                     foreach (var d in Devices)
@@ -171,7 +172,7 @@ namespace CDS.Instrument
 
         private void PrepareAcquisition()
         {
-            throw new NotImplementedException();
+//            throw new NotImplementedException();
         }
 
         public void PostRun()
@@ -191,7 +192,7 @@ namespace CDS.Instrument
 
         private void FinishAcquisition()
         {
-            throw new NotImplementedException();
+//            throw new NotImplementedException();
         }
 
         public void PostWork()

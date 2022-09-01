@@ -10,10 +10,10 @@ namespace CDS.Core
     {
         int Index { get; set; }
         string? Name { get; set; }
-        IDevice Device { get; init; }
-        int Channel { get; init; }
-        string Unit { get; init; }
-        TimeValue Time { get; set; }
+        IDevice? Device { get; }
+        int Channel { get; }
+        string Unit { get; }
+        TimeValue? Time { get; set; }
         double Hz { get; set; }
     }
 }

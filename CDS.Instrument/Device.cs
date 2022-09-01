@@ -29,17 +29,17 @@ namespace CDS.Instrument
 
         public abstract bool SetMethod(IMethod? method);
         public abstract void GetMethod(IMethod? method);
-        internal abstract Task<bool> SendMethodAsync();
-        internal abstract Task<bool> LoadMethodAsync();
+        internal protected abstract Task<bool> SendMethodAsync();
+        internal protected abstract Task<bool> LoadMethodAsync();
 
-        internal abstract bool Ready();
-        internal abstract bool PreRun();
-        internal abstract bool Run();
-        internal abstract bool PostRun();
-        internal abstract bool PostWork();
+        internal protected abstract bool Ready();
+        internal protected abstract bool PreRun();
+        internal protected abstract bool Run();
+        internal protected abstract bool PostRun();
+        internal protected abstract bool PostWork();
 
-        internal abstract void Stop();
-        internal abstract void Halt();
-        internal abstract void Reset();
+        internal protected abstract void Stop();
+        internal protected abstract void Halt();
+        internal protected abstract void Reset();
     }
 }

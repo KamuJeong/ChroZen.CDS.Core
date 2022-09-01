@@ -13,11 +13,11 @@ namespace CDS.Instrument
         {
         }
 
-        public int Index { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IDevice Device { get => throw new NotImplementedException(); init => throw new NotImplementedException(); }
-        public int Channel { get => throw new NotImplementedException(); init => throw new NotImplementedException(); }
-        public string Unit { get => throw new NotImplementedException(); init => throw new NotImplementedException(); }
-        public TimeValue Time { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public double Hz { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int Index { get; set; }
+        public IDevice? Device { get; set; }
+        public int Channel { get; set; }
+        public string? Unit { get; set; }
+        public TimeValue? Time { get; set; }
+        public double Hz { get; set; }
     }
 }
