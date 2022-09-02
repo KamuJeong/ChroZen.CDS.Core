@@ -8,9 +8,9 @@ namespace CDS.Core
 {
     public interface ISequenceItem
     {
-        ISequenceState State { get; init; }
-        ISample Sample { get; init; }
-        IInjection Injection { get; init; }
+        ISequenceState State { get; }
+        ISample? Sample { get; }
+        IInjection? Injection { get; }
         IMethod? Method { get; set; }
         IProject? Project { get; set;  }
     }

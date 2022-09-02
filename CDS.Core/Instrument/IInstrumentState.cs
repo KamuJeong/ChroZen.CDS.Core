@@ -24,11 +24,11 @@ namespace CDS.Core
         bool IsSingleShot { get; }
         bool StopReserved { get; }
         bool HaltReserved { get; }
-        bool HaltAfterLastSequence { get; }
+        bool HaltAfterSequenceRun { get; }
 
-        IMethod? Method { get; set; }
-        IProject? Project { get; set; }
-        IChromatogram? Chromatogram { get; set; }
+        IMethod? Method { get; }
+        IProject? Project { get; }
+        IChromatogram? Chromatogram { get; }
 
         TimeSpan ElapsedTime { get; }
     }

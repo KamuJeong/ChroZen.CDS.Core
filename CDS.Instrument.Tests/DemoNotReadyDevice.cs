@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CDS.Instrument.Tests
 {
-    internal class DemoNotReadyDevice : Device
+    public class DemoNotReadyDevice : Device
     {
         public DemoNotReadyDevice(ModelBase? parent, string? name) : base(parent, name)
         {
@@ -19,10 +19,8 @@ namespace CDS.Instrument.Tests
         public override Task<bool> ConnectAsync()
         {
             ChangeStatus(DeviceStatus.NotReady);
-            return Task.FromResult(true);
+            return base.ConnectAsync();
         }
-
-        public override void Disconnect() => ChangeStatus(DeviceStatus.None);
 
         public override void GetMethod(IMethod? method)
         {

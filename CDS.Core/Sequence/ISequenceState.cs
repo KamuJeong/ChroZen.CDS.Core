@@ -14,6 +14,6 @@
     {
         SequenceStatus Status { get; set; }
         int Counter { get; set; }
-        IEnumerable<IChromatogram> Chromatograms { get; init; }
+        IEnumerable<IChromatogram> Chromatograms { get; }
     }
 }

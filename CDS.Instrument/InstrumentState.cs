@@ -10,10 +10,11 @@ namespace CDS.Instrument
         public IProject? Project { get; set; }
         public IChromatogram? Chromatogram { get; set; }
 
-        public TimeSpan ElapsedTime => TimeSpan.Zero;
+        internal DateTime _lastRunTime = DateTime.Today;
+        public TimeSpan ElapsedTime => DateTime.Now - _lastRunTime;
         public bool IsSingleShot { get; internal set; }
         public bool StopReserved { get; set; }
         public bool HaltReserved { get; set; }
-        public bool HaltAfterLastSequence { get; set; }
+        public bool HaltAfterSequenceRun { get; set; }
     }
 }

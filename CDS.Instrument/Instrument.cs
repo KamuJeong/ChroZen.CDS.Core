@@ -68,7 +68,7 @@ namespace CDS.Instrument
                     State.IsSingleShot = true;
                     State.StopReserved = false;
                     State.HaltReserved = false;
-                    State.HaltAfterLastSequence = false;
+                    State.HaltAfterSequenceRun = false;
                 }
             }
         }
@@ -172,6 +172,7 @@ namespace CDS.Instrument
 
         private void PrepareAcquisition()
         {
+            State._lastRunTime = DateTime.Now;
 //            throw new NotImplementedException();
         }
 
@@ -239,6 +240,47 @@ namespace CDS.Instrument
 
                 ChangeStatus(InstrumentStatus.NotReady);
             }
+        }
+
+        public void StopAfterThisRun(bool stop)
+        {
+            State.StopReserved = stop;
+        }
+
+        public void HaltAfterThisRun(bool halt)
+        {
+            State.HaltReserved = halt;
+        }
+
+        public void HaltAfterSequenceRun(bool halt)
+        {
+            State.HaltAfterSequenceRun = halt;
+        }
+
+        public void SetMethod(IMethod? method)
+        {
+            if (new[] { InstrumentStatus.NotReady, InstrumentStatus.Ready, InstrumentStatus.PreRun }.Contains(State.Status))
+            {
+                State.Method = method;
+                if(State.Status == InstrumentStatus.Ready)
+                {
+                    ChangeStatus(InstrumentStatus.NotReady);
+                }
+            }
+        }
+
+        public void SetProject(IProject? project)
+        {
+            if (new[] { InstrumentStatus.NotReady, InstrumentStatus.Ready, InstrumentStatus.PreRun }.Contains(State.Status))
+            {
+                State.Project = project;
+            }
+        }
+
+        public void SetSequenceItem(ISequenceItem? sequenceItem)
+        {
+            SetProject(sequenceItem?.Project);
+            SetMethod(sequenceItem?.Method);
         }
     }
 }
