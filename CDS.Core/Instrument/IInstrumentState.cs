@@ -12,6 +12,7 @@ namespace CDS.Core
         NotReady,
         Ready,
         PreRun,
+        Pause,
         Run,
         PostRun,
         PostWork,
@@ -26,6 +27,7 @@ namespace CDS.Core
         bool HaltReserved { get; }
         bool HaltAfterSequenceRun { get; }
 
+        public ISequenceItem? SequenceItem { get; }
         IMethod? Method { get; }
         IProject? Project { get; }
         IChromatogram? Chromatogram { get; }

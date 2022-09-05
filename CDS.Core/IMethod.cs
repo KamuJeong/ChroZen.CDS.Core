@@ -1,6 +1,6 @@
 ﻿namespace CDS.Core
 {
-    public interface IMethod
+    public interface IMethod : ICloneable
     {
     }
 }

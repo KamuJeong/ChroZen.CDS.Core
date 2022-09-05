@@ -9,6 +9,10 @@ namespace CDS.Core
     public interface ISequenceItem
     {
         ISequenceState State { get; }
+        void SetRunStatus();
+        void SetErrorStatus();
+        void Reset();
+
         ISample? Sample { get; }
         IInjection? Injection { get; }
         IMethod? Method { get; set; }

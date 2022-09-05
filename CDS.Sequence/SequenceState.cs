@@ -10,8 +10,8 @@ namespace CDS.Sequence
     public class SequenceState : ISequenceState
     {
         public SequenceStatus Status { get; set; }
-        public int Counter { get; set; }
+        public int Counter { get; }
 
-        public IEnumerable<IChromatogram> Chromatograms { get; } = new List<IChromatogram>();
+        public IEnumerable<IChromatogram> Chromatograms { get;  } = new List<IChromatogram>();
     }
 }

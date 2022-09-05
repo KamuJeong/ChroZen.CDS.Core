@@ -48,8 +48,11 @@ namespace CDS.Instrument
                 }
 
                 TimerTick?.Invoke(this, DateTime.Now - _launchTime);
+                CheckReadyStatus();
             }
         }
+
+        protected abstract void CheckReadyStatus();
 
         public Uri? Uri { get; set; }
         public virtual Task<bool> ConnectAsync()
@@ -79,7 +82,18 @@ namespace CDS.Instrument
 
         public abstract bool SetMethod(IMethod? method);
         public abstract void GetMethod(IMethod? method);
-        internal protected abstract Task<bool> SendMethodAsync();
+
+        internal Task<bool> SendMethodAsyncWrap()
+        {
+            ChangeStatus(DeviceStatus.NotReady);
+            return SendMethodAsync();
+        }
+        protected abstract Task<bool> SendMethodAsync();
+        
+        internal Task<bool> LoadMethodAsyncWrap()
+        {
+            return LoadMethodAsync();
+        }
         internal protected abstract Task<bool> LoadMethodAsync();
 
         internal protected abstract bool Ready();
@@ -88,9 +102,26 @@ namespace CDS.Instrument
         internal protected abstract bool PostRun();
         internal protected abstract bool PostWork();
 
-        internal protected abstract void Stop();
-        internal protected abstract void Halt();
-        internal protected abstract void Reset();
+        internal void StopWrap()
+        {
+            Stop();
+            ChangeStatus(DeviceStatus.NotReady);
+        }
+        protected abstract void Stop();
+
+        internal void HaltWrap()
+        {
+            Halt();
+            ChangeStatus(DeviceStatus.NotReady);
+        }
+        protected abstract void Halt();
+
+        internal void ResetWrap()
+        {
+            Reset();
+            ChangeStatus(DeviceStatus.NotReady);
+        }
+        protected abstract void Reset();
 
         protected virtual void Dispose(bool disposing)
         {

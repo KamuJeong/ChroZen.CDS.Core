@@ -11,20 +11,24 @@ namespace CDS.Instrument
         public InstrumentState State { get; } = new InstrumentState();
         IInstrumentState IInstrument.State => State;
 
-        public event EventHandler? StatusChanged;
-        internal void InvokeStatusChangedEvent(object sender)
+        public event EventHandler<InstrumentStatus>? StatusChanged;
+        internal void InvokeStatusChangedEvent(object sender, InstrumentStatus oldStatus = InstrumentStatus.None)
         {
-            StatusChanged?.Invoke(sender, EventArgs.Empty);
+            StatusChanged?.Invoke(sender, oldStatus);
 
             if (sender is Device device)
             {
                 if (device.State.Status == DeviceStatus.Error)
                 {
                     foreach (var d in Devices)
-                        d.Halt();
+                        d.HaltWrap();
 
                     ChangeStatus(InstrumentStatus.Error);
                 } 
+                else if (State.Status == InstrumentStatus.Ready && device.State.Status == DeviceStatus.NotReady)
+                {
+                    ChangeStatus(InstrumentStatus.NotReady);
+                }
                 else if (State.Status == InstrumentStatus.NotReady && device.State.Status == DeviceStatus.Ready)
                 {
                     if (Devices.All(d => d.State.Status == DeviceStatus.Ready))
@@ -60,11 +64,13 @@ namespace CDS.Instrument
         {
             if(status != State.Status)
             {
-                State.Status = status;
-                InvokeStatusChangedEvent(this);
+                (State.Status, status) = (status, State.Status);
+                InvokeStatusChangedEvent(this, status);
 
-                if(status == InstrumentStatus.NotReady)
+                if(State.Status == InstrumentStatus.NotReady)
                 {
+                    State.SequenceItem = null;
+
                     State.IsSingleShot = true;
                     State.StopReserved = false;
                     State.HaltReserved = false;
@@ -99,7 +105,7 @@ namespace CDS.Instrument
             ChangeStatus(InstrumentStatus.NotReady);
 
             foreach (var d in Devices)
-                d.Halt();
+                d.HaltWrap();
         }
 
         public void Ready()
@@ -120,13 +126,13 @@ namespace CDS.Instrument
                 ChangeStatus(InstrumentStatus.NotReady);
 
                 foreach (var d in Devices)
-                    d.Reset();
+                    d.ResetWrap();
             }
         }
 
         public void PreRun()
         {
-            if (new[] { InstrumentStatus.NotReady, InstrumentStatus.Ready, InstrumentStatus.PostWork }.Contains(State.Status))
+            if (new[] { InstrumentStatus.NotReady, InstrumentStatus.Ready, InstrumentStatus.Pause, InstrumentStatus.PostWork }.Contains(State.Status))
             {
                 // In the StatusChanged event handler of Sequence
                 // if there are no more items, Invoke Stop() or Halt()
@@ -134,12 +140,19 @@ namespace CDS.Instrument
 
                 if (State.Status == InstrumentStatus.PreRun)
                 {
-                    State.IsSingleShot = false;
+                    if (State.SequenceItem?.State.Status == SequenceStatus.Pause)
+                    {
+                        ChangeStatus(InstrumentStatus.Pause);
+                    }
+                    else
+                    {
+                        State.IsSingleShot = false;
 
-                    SendMethod();
+                        SendMethod();
 
-                    foreach (var d in Devices)
-                        d.PreRun();
+                        foreach (var d in Devices)
+                            d.PreRun();
+                    }
                 }
             }
         }
@@ -150,7 +163,7 @@ namespace CDS.Instrument
             {
                 if(d.SetMethod(State.Method))
                 {
-                    await d.SendMethodAsync();
+                    await d.SendMethodAsyncWrap();
                 }
             }
         }
@@ -230,13 +243,13 @@ namespace CDS.Instrument
 
         public void Stop()
         {
-            if (new[] { InstrumentStatus.PreRun, InstrumentStatus.Run, InstrumentStatus.PostRun, InstrumentStatus.PostWork }.Contains(State.Status))
+            if (new[] { InstrumentStatus.PreRun, InstrumentStatus.Pause, InstrumentStatus.Run, InstrumentStatus.PostRun, InstrumentStatus.PostWork }.Contains(State.Status))
             {
                 if (State.Status == InstrumentStatus.Run)
                     FinishAcquisition();
 
                 foreach (var d in Devices)
-                    d.Stop();
+                    d.StopWrap();
 
                 ChangeStatus(InstrumentStatus.NotReady);
             }
@@ -261,11 +274,7 @@ namespace CDS.Instrument
         {
             if (new[] { InstrumentStatus.NotReady, InstrumentStatus.Ready, InstrumentStatus.PreRun }.Contains(State.Status))
             {
-                State.Method = method;
-                if(State.Status == InstrumentStatus.Ready)
-                {
-                    ChangeStatus(InstrumentStatus.NotReady);
-                }
+                State.Method = method?.Clone() as IMethod;
             }
         }
 

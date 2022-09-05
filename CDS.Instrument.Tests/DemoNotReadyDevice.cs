@@ -64,5 +64,9 @@ namespace CDS.Instrument.Tests
 
 
         protected override void Stop() => ChangeStatus(DeviceStatus.NotReady);
+
+        protected override void CheckReadyStatus()
+        {
+        }
     }
 }

@@ -3,9 +3,12 @@
     public interface ISequence
     {
         IEnumerable<ISequenceItem> Items { get; }
+        ISequenceItem? GetNext();
+        ISequenceItem? GetCurrent();
 
         bool Ready();
         bool Run();
-        bool Stop();
+        bool Pause();
+        bool Resume();
     }
 }

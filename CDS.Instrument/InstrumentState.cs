@@ -6,6 +6,7 @@ namespace CDS.Instrument
     {
         public InstrumentStatus Status { get; internal set; } 
  
+        public ISequenceItem? SequenceItem { get; set; }
         public IMethod? Method { get; set; }
         public IProject? Project { get; set; }
         public IChromatogram? Chromatogram { get; set; }

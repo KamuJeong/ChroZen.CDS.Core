@@ -7,13 +7,15 @@
         Pause,
         Stop,
         Error,
-        Final
+        Finished
     }
 
     public interface ISequenceState
     {
-        SequenceStatus Status { get; set; }
-        int Counter { get; set; }
+        SequenceStatus Status { get; }
+
+        int Counter { get; }
+
         IEnumerable<IChromatogram> Chromatograms { get; }
     }
 }
