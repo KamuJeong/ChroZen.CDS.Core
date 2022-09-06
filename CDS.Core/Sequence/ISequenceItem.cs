@@ -13,7 +13,11 @@ namespace CDS.Core
         void SetErrorStatus();
         void Reset();
 
-        ISample? Sample { get; }
+        bool IsSkipped();
+
+        String? SampleName { get; set; }
+        string? SampleID { get; set; }
+
         IInjection? Injection { get; }
         IMethod? Method { get; set; }
         IProject? Project { get; set;  }

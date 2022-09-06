@@ -16,6 +16,6 @@
 
         int Counter { get; }
 
-        IEnumerable<IChromatogram> Chromatograms { get; }
+        IEnumerable<IChromatogram?> Chromatograms { get; }
     }
 }

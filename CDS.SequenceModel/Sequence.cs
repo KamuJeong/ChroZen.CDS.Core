@@ -1,6 +1,7 @@
 ﻿using CDS.Core;
+using System.Diagnostics;
 
-namespace CDS.Sequence
+namespace CDS.SequenceModel
 {
     public class Sequence : ModelBase, ISequence
     {
@@ -14,7 +15,7 @@ namespace CDS.Sequence
 
         public void Set(IEnumerable<SequenceItem> items) => _items = items.ToList();
 
-        private IInstrument Instrument => Parent.FindChildren<IInstrument>(null).First();
+        private IInstrument? Instrument => Parent?.FindChildren<IInstrument>(null).First();
 
         public bool Ready()
         {
@@ -62,7 +63,21 @@ namespace CDS.Sequence
         {
             if(sender is IInstrument instrument)
             {
-                if(instrument.State.Status == InstrumentStatus.PreRun)
+                if (instrument.State.Status == InstrumentStatus.NotReady)
+                {
+                    SequenceItem? item = GetCurrent() as SequenceItem;
+                    if (item != null)
+                    {
+                        if (item.State.Counter > 0)
+                            item.SetStopStatus();
+                        else
+                            item.Reset();
+
+                        foreach (var it in Items.Where(i => new[] { SequenceStatus.Run, SequenceStatus.Pause }.Contains(i.State.Status)))
+                            it.Reset();
+                    }
+                } 
+                else if (instrument.State.Status == InstrumentStatus.PreRun)
                 {
                     SequenceItem? item = GetNext() as SequenceItem;
                     if(item == null)
@@ -82,19 +97,11 @@ namespace CDS.Sequence
                         instrument.SetSequenceItem(item);
                     }
                 }
-                else if(instrument.State.Status == InstrumentStatus.NotReady)
+                else if (instrument.State.Status == InstrumentStatus.Run && !instrument.State.IsSingleShot)
                 {
-                    SequenceItem? item = GetCurrent() as SequenceItem;
-                    if (item != null)
-                    {
-                        if (item.State.Counter > 0)
-                            item.SetStopStatus();
-                        else
-                            item.Reset();
+                    Debug.Assert(instrument.State.SequenceItem == GetCurrent());
 
-                        foreach (var it in Items.Where(i => new[] { SequenceStatus.Run, SequenceStatus.Pause }.Contains(i.State.Status)))
-                            it.Reset();
-                    }
+                    (GetCurrent() as SequenceItem)?.AddChromatogram(instrument.State.Chromatogram);
                 }
             }
         }
@@ -136,7 +143,7 @@ namespace CDS.Sequence
         public bool Resume()
         {
             bool ret = false;
-            if (Instrument.State.Status == InstrumentStatus.Pause)
+            if (Instrument?.State.Status == InstrumentStatus.Pause)
             {
                 foreach (var s in Items.Where(s => s.State.Status == SequenceStatus.Pause)
                                         .Cast<SequenceItem>())

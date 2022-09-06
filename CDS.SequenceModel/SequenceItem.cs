@@ -5,14 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Sequence
+namespace CDS.SequenceModel
 {
     public class SequenceItem : ISequenceItem
     {
+        // State
         private SequenceState _state =  new SequenceState();
         public ISequenceState State => _state;
 
-        public void Reset() => _state.Status = SequenceStatus.Reserved;
+        public void Reset() => _state.Reset();
 
         public void SetRunStatus()
         {
@@ -25,17 +26,30 @@ namespace CDS.Sequence
             _state.Status = SequenceStatus.Error;
         }
 
-        internal void SetPauseStatus() => _state.Status = SequenceStatus.Pause;
-        internal void SetStopStatus() => _state.Status = SequenceStatus.Stop;
-        internal void SetFinishedStatus() => _state.Status = SequenceStatus.Finished;
+        public void SetPauseStatus() => _state.Status = SequenceStatus.Pause;
+        public void SetStopStatus() => _state.Status = SequenceStatus.Stop;
+        public void SetFinishedStatus() => _state.Status = SequenceStatus.Finished;
 
+        public void AddChromatogram(IChromatogram? chromatogram) => _state.AddChromatogram(chromatogram);
 
-        public ISample? Sample { get; set; }
+        public bool IsSkipped()
+        {
+            return _state.Status == SequenceStatus.Error;
+        }
 
+        // Sample
+        public string? SampleName { get; set; }
+        public string? SampleID { get; set; }
+        public SampleTypes SampleType { get; set; }
+
+        // Injection
         public IInjection? Injection { get; set; }
 
+        // Method
         public IMethod? Method { get; set; }
 
+        // Project
         public IProject? Project { get; set; }
+
     }
 }

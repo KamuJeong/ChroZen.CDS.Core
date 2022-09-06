@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Instrument.Tests
+namespace CDS.InstrumentModel.Tests
 {
     public class DemoPreRunDevice : DemoReadyDevice
     {

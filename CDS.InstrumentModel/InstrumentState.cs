@@ -1,6 +1,6 @@
 ﻿using CDS.Core;
 
-namespace CDS.Instrument
+namespace CDS.InstrumentModel
 {
     public class InstrumentState : IInstrumentState
     {

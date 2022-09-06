@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Instrument
+namespace CDS.InstrumentModel
 {
     public class SignalSet : ModelBase, ISignalSet
     {

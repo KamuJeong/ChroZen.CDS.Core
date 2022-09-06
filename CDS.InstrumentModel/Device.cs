@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Instrument
+namespace CDS.InstrumentModel
 {
     public abstract class Device : ModelBase, IDevice, IDisposable
     {
@@ -47,25 +47,31 @@ namespace CDS.Instrument
                     break; 
                 }
 
+                OnTimerTick(DateTime.Now - _launchTime);
                 TimerTick?.Invoke(this, DateTime.Now - _launchTime);
                 CheckReadyStatus();
             }
         }
 
+        protected virtual void OnTimerTick(TimeSpan ts)     { }
         protected abstract void CheckReadyStatus();
 
         public Uri? Uri { get; set; }
-        public virtual Task<bool> ConnectAsync()
+        public Task<bool> ConnectAsyncWrap()
         {
             _tokenSource?.Cancel();
             _tokenSource = new CancellationTokenSource();
             Timer(_tokenSource.Token);
 
-            return Task.FromResult(true);
+            return ConnectAsync();
         }
 
-        public virtual void Disconnect()
+        public abstract Task<bool> ConnectAsync();
+
+        public void DisconnectWrap()
         {
+            Disconnect();
+
             try
             {
                 _tokenSource?.Cancel();
@@ -79,6 +85,8 @@ namespace CDS.Instrument
                 ChangeStatus(DeviceStatus.None);
             }
         }
+
+        public abstract void Disconnect();
 
         public abstract bool SetMethod(IMethod? method);
         public abstract void GetMethod(IMethod? method);
@@ -135,7 +143,7 @@ namespace CDS.Instrument
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
-                Disconnect();
+                DisconnectWrap();
 
                 disposedValue = true;
             }

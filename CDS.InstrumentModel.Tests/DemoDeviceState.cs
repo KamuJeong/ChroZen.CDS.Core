@@ -1,4 +1,4 @@
-﻿namespace CDS.Instrument.Tests
+﻿namespace CDS.InstrumentModel.Tests
 {
     public class DemoDeviceState : DeviceState
     {

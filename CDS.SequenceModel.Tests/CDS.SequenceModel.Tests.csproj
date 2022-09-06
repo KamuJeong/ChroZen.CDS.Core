@@ -17,7 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CDS.Core\CDS.Core.csproj" />
-    <ProjectReference Include="..\CDS.Instrument\CDS.Instrument.csproj" />
+    <ProjectReference Include="..\CDS.InstrumentModel\CDS.InstrumentModel.csproj" />
+    <ProjectReference Include="..\CDS.SequenceModel\CDS.SequenceModel.csproj" />
   </ItemGroup>
 
 </Project>

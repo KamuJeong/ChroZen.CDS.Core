@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CDS.Core;
 
-namespace CDS.Instrument.Tests
+namespace CDS.InstrumentModel.Tests
 {
     [TestClass]
     public class InstrumentTests
@@ -9,7 +9,7 @@ namespace CDS.Instrument.Tests
         private ModelBase? root;
         private Instrument? instrument;
 
-        public TestContext TestContext { get; set; }
+        public TestContext? TestContext { get; set; }
 
         [TestInitialize]
         public void CreateInstrument()
@@ -21,7 +21,7 @@ namespace CDS.Instrument.Tests
                 if (s is Instrument inst)
                     TestContext.WriteLine($"{inst.Name}: {inst.State.Status}");
                 else if (s is Device dev)
-                    TestContext.WriteLine($"{dev.Name}: {dev.State.Status}");
+                    TestContext.WriteLine($"\t{dev.Name}: {dev.State.Status}");
             };
 
             new DemoNotReadyDevice(instrument, "NotReadyDevice");
@@ -33,63 +33,66 @@ namespace CDS.Instrument.Tests
         [TestMethod]
         public void ConnectInstrument()
         {
-            instrument.ConnectAsync().Wait();
+            instrument?.ConnectAsync().Wait();
 
-            Assert.AreEqual(InstrumentStatus.NotReady, instrument.State.Status);
-            CollectionAssert.AreEqual(instrument.Devices.Select(d => d.State.Status).ToArray(),
-                                        instrument.Devices.Select(d => DeviceStatus.NotReady).ToArray());
+            Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
+            CollectionAssert.AreEqual(instrument?.Devices.Select(d => d.State.Status).ToArray(),
+                                        instrument?.Devices.Select(d => DeviceStatus.NotReady).ToArray());
         }
 
         [TestMethod]
         public void ReadyInstrument()
         {
-            instrument.ConnectAsync().Wait();
-            instrument.Ready();
-            Assert.AreEqual(InstrumentStatus.NotReady, instrument.State.Status);
-            Assert.AreEqual(DeviceStatus.Ready, instrument.FindChildren<Device>("ReadyDevice").First().State.Status);
+            instrument?.ConnectAsync().Wait();
+            instrument?.Ready();
+            Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
+            Assert.AreEqual(DeviceStatus.Ready, instrument?.FindChildren<Device>("ReadyDevice").First().State.Status);
         }
 
         [TestMethod]
         public void PreRunInstrument()
         {
-            instrument.ConnectAsync().Wait();
+            instrument?.ConnectAsync().Wait();
 
-            TestContext.WriteLine($">> sequence <<");
+            TestContext?.WriteLine($">> sequence <<");
             
-            instrument.Ready();
-            instrument.PreRun();
-            Assert.AreEqual(InstrumentStatus.PreRun, instrument.State.Status);
-            Assert.AreEqual(DeviceStatus.PreRun, instrument.FindChildren<Device>("PreRunDevice").First().State.Status);
-            instrument.Stop();
+            instrument?.Ready();
+            instrument?.PreRun();
+            Assert.AreEqual(InstrumentStatus.PreRun, instrument?.State.Status);
+            Assert.AreEqual(DeviceStatus.PreRun, instrument?.FindChildren<Device>("PreRunDevice").First().State.Status);
+            instrument?.Stop();
 
-            TestContext.WriteLine($">> no more <<");
+            TestContext?.WriteLine($">> no more <<");
 
-            instrument.StatusChanged += (s, e) =>
+            if (instrument != null)
             {
-                if (s is Instrument inst && inst.State.Status == InstrumentStatus.PreRun)
+                instrument.StatusChanged += (s, e) =>
                 {
-                    inst.Stop();
-                }
-            };
-            instrument.Ready();
-            instrument.PreRun();
-            Assert.AreEqual(InstrumentStatus.NotReady, instrument.State.Status);
-            Assert.AreEqual(DeviceStatus.NotReady, instrument.FindChildren<Device>("PreRunDevice").First().State.Status);
+                    if (s is Instrument inst && inst.State.Status == InstrumentStatus.PreRun)
+                    {
+                        inst.Stop();
+                    }
+                };
+            }
+            instrument?.Ready();
+            instrument?.PreRun();
+            Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
+            Assert.AreEqual(DeviceStatus.NotReady, instrument?.FindChildren<Device>("PreRunDevice").First().State.Status);
         }
 
         [TestMethod]
         public void RunInstrument()
         {
-            instrument.ConnectAsync().Wait();
+            instrument?.ConnectAsync().Wait();
 
-            TestContext.WriteLine(">> single run <<");
+            TestContext?.WriteLine(">> single run <<");
 
-            instrument.Ready();
-            instrument.Run();
-            Assert.AreEqual(InstrumentStatus.Run, instrument.State.Status);
-            Assert.AreEqual(DeviceStatus.Run, instrument.FindChildren<Device>("RunDevice").First().State.Status);
+            instrument?.Ready();
+            instrument?.Run();
+            Assert.AreEqual(InstrumentStatus.Run, instrument?.State.Status);
+            Assert.AreEqual(DeviceStatus.Run, instrument?.FindChildren<Device>("RunDevice").First().State.Status);
 
-            instrument.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
+            instrument?.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
             Assert.AreEqual(InstrumentStatus.NotReady, instrument.State.Status);
 
             TestContext.WriteLine(">> sequence run <<");

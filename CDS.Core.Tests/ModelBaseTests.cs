@@ -80,6 +80,18 @@ namespace CDS.Core.Tests
             Assert.IsFalse (models.Except(new[] { child, grand }).Any());
         }
 
+        [TestMethod]
+        public void FindRoot()
+        {
+            var child = new ModelBase(root, "first child");
+            var grand = new ModelBase(child, "first grand child");
+
+            Assert.AreEqual(root, root.Root);
+            Assert.AreEqual(root, child.Root);
+            Assert.AreEqual(root, grand.Root);
+        }
+
+
         [TestCleanup]
         public void DeleteRoot()
         {

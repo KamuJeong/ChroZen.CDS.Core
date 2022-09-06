@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Instrument.Tests
+namespace CDS.InstrumentModel.Tests
 {
     public class DemoNotReadyDevice : Device
     {
@@ -19,7 +19,11 @@ namespace CDS.Instrument.Tests
         public override Task<bool> ConnectAsync()
         {
             ChangeStatus(DeviceStatus.NotReady);
-            return base.ConnectAsync();
+            return Task.FromResult(true);
+        }
+
+        public override void Disconnect()
+        {
         }
 
         public override void GetMethod(IMethod? method)

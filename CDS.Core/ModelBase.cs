@@ -19,6 +19,16 @@
 
         public ModelBase? Parent { get; private set; }
 
+        public ModelBase? Root
+        {
+            get
+            {
+                if (Parent == null)
+                    return this;
+                return Parent.Root;
+            }
+        }
+
         public void ChangeParent(ModelBase newParent)
         {
             if (newParent == Parent)
