@@ -16,7 +16,7 @@ namespace CDS.InstrumentModel.Tests
 
         public override DeviceState State { get; init; }
 
-        public override Task<bool> ConnectAsync()
+        public override Task<bool> ConnectAsync(CancellationToken token)
         {
             ChangeStatus(DeviceStatus.NotReady);
             return Task.FromResult(true);
@@ -44,13 +44,13 @@ namespace CDS.InstrumentModel.Tests
             return Task.FromResult(false);
         }
 
-        protected override Task<bool> SendMethodAsync()
+        protected override bool SendMethod()
         {
             if (new[] { DeviceStatus.NotReady, DeviceStatus.Ready, DeviceStatus.PreRun }.Contains(State.Status))
             {
-                return Task.FromResult(true);
+                return true;
             }
-            return Task.FromResult(false);
+            return false;
         }
 
 

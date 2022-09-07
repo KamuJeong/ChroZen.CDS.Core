@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CDS.SequenceModel", "CDS.Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDS.SequenceModel.Tests", "CDS.SequenceModel.Tests\CDS.SequenceModel.Tests.csproj", "{6226B590-1124-4E0A-9E60-5F18383AF63E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChromassProtocol", "ChromassProtocol\ChromassProtocol.csproj", "{605111DD-1257-42FF-AFFC-B827F93269B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{6226B590-1124-4E0A-9E60-5F18383AF63E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6226B590-1124-4E0A-9E60-5F18383AF63E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6226B590-1124-4E0A-9E60-5F18383AF63E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{605111DD-1257-42FF-AFFC-B827F93269B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{605111DD-1257-42FF-AFFC-B827F93269B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{605111DD-1257-42FF-AFFC-B827F93269B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{605111DD-1257-42FF-AFFC-B827F93269B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

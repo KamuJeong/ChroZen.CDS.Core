@@ -63,10 +63,10 @@ namespace CDS.InstrumentModel
             _tokenSource = new CancellationTokenSource();
             Timer(_tokenSource.Token);
 
-            return ConnectAsync();
+            return ConnectAsync(_tokenSource.Token);
         }
 
-        public abstract Task<bool> ConnectAsync();
+        public abstract Task<bool> ConnectAsync(CancellationToken token);
 
         public void DisconnectWrap()
         {
@@ -91,12 +91,12 @@ namespace CDS.InstrumentModel
         public abstract bool SetMethod(IMethod? method);
         public abstract void GetMethod(IMethod? method);
 
-        internal Task<bool> SendMethodAsyncWrap()
+        internal bool SendMethodWrap()
         {
             ChangeStatus(DeviceStatus.NotReady);
-            return SendMethodAsync();
+            return SendMethod();
         }
-        protected abstract Task<bool> SendMethodAsync();
+        protected abstract bool SendMethod();
         
         internal Task<bool> LoadMethodAsyncWrap()
         {

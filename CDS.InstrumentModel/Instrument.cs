@@ -162,13 +162,13 @@ namespace CDS.InstrumentModel
             }
         }
 
-        private async void SendMethod()
+        private void SendMethod()
         {
             foreach (var d in Devices)
             {
                 if (d.SetMethod(State.Method))
                 {
-                    await d.SendMethodAsyncWrap();
+                    d.SendMethodWrap();
                 }
             }
         }

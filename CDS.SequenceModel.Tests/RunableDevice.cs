@@ -17,7 +17,7 @@ namespace CDS.SequenceModel.Tests
 
         public override DeviceState State { get; init; }
 
-        public override Task<bool> ConnectAsync()
+        public override Task<bool> ConnectAsync(CancellationToken token)
         {
             ChangeStatus(DeviceStatus.NotReady);
             return Task.FromResult(true);
@@ -85,7 +85,7 @@ namespace CDS.SequenceModel.Tests
             return true;
         }
 
-        protected override Task<bool> SendMethodAsync() => Task.FromResult(true);
+        protected override bool SendMethod() => true;
 
         protected override void Stop()
         {
