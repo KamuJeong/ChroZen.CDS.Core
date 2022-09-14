@@ -12,14 +12,12 @@ namespace CDS.SequenceModel.Tests
     {
         public RunableDevice(ModelBase? parent, string? name) : base(parent, name)
         {
-            State = new DeviceState();
         }
 
-        public override DeviceState State { get; init; }
 
         public override Task<bool> ConnectAsync(CancellationToken token)
         {
-            ChangeStatus(DeviceStatus.NotReady);
+            Status = DeviceStatus.NotReady;
             return Task.FromResult(true);
         }
 
@@ -32,7 +30,7 @@ namespace CDS.SequenceModel.Tests
         {
             base.OnTimerTick(ts);
 
-            if(Parent is Instrument instrument && State.Status == DeviceStatus.Run)
+            if(Parent is Instrument instrument && Status == DeviceStatus.Run)
             {
                 if(instrument.State.ElapsedTime.TotalSeconds >= 0.2)
                 {
@@ -71,7 +69,7 @@ namespace CDS.SequenceModel.Tests
 
         protected override bool Ready()
         {
-            ChangeStatus(DeviceStatus.Ready);
+            Status = DeviceStatus.Ready;
             return true;
         }
 
@@ -81,7 +79,7 @@ namespace CDS.SequenceModel.Tests
 
         protected override bool Run()
         {
-            ChangeStatus(DeviceStatus.Run);
+            Status = DeviceStatus.Run;
             return true;
         }
 

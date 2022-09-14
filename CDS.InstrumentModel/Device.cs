@@ -15,16 +15,6 @@ namespace CDS.InstrumentModel
 
         }
 
-        public abstract DeviceState State { get; init; }
-        protected void ChangeStatus(DeviceStatus status)
-        {
-            if(State.Status != status)
-            {
-                State.Status = status;
-                (Parent as Instrument)?.InvokeStatusChangedEvent(this);
-            }
-        }
-
         public int TickInterval { get; set; } = 100; 
         public event EventHandler<TimeSpan>? TimerTick;
 
@@ -62,6 +52,20 @@ namespace CDS.InstrumentModel
 
         public string? Model { get; set; }
 
+        private DeviceStatus _status = DeviceStatus.None;
+        public DeviceStatus Status 
+        {
+            get => _status; 
+            protected set
+            {
+                if (_status != value)
+                {
+                    _status = value;
+                    (Parent as Instrument)?.InvokeStatusChangedEvent(this);
+                }
+            }
+        }
+
         internal Task<bool> ConnectAsyncWrap()
         {
             _tokenSource?.Cancel();
@@ -87,7 +91,7 @@ namespace CDS.InstrumentModel
             }
             finally
             {
-                ChangeStatus(DeviceStatus.None);
+                Status = DeviceStatus.None;
             }
         }
 
@@ -98,7 +102,7 @@ namespace CDS.InstrumentModel
 
         internal bool SendMethodWrap()
         {
-            ChangeStatus(DeviceStatus.NotReady);
+            Status = DeviceStatus.NotReady;
             return SendMethod();
         }
         protected abstract bool SendMethod();
@@ -118,21 +122,21 @@ namespace CDS.InstrumentModel
         internal void StopWrap()
         {
             Stop();
-            ChangeStatus(DeviceStatus.NotReady);
+            Status = DeviceStatus.NotReady;
         }
         protected abstract void Stop();
 
         internal void HaltWrap()
         {
             Halt();
-            ChangeStatus(DeviceStatus.NotReady);
+            Status = DeviceStatus.NotReady;
         }
         protected abstract void Halt();
 
         internal void ResetWrap()
         {
             Reset();
-            ChangeStatus(DeviceStatus.NotReady);
+            Status = DeviceStatus.NotReady;
         }
         protected abstract void Reset();
 

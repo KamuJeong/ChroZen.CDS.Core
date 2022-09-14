@@ -30,7 +30,7 @@ namespace CDS.SequenceModel.Tests
                 }
                 else if (s is Device dev)
                 {
-                    TestContext?.WriteLine($"\t{dev.Name}: {dev.State.Status}");
+                    TestContext?.WriteLine($"\t{dev.Name}: {dev.Status}");
                 }
             };
             new RunableDevice(instrument, "RunnableFor1sec");

@@ -16,7 +16,7 @@ namespace CDS.SequenceModel.Tests
 
         protected override void OnTimerTick(TimeSpan ts)
         {
-            if (Parent is Instrument instrument && State.Status == DeviceStatus.PreRun)
+            if (Parent is Instrument instrument && Status == DeviceStatus.PreRun)
             {
                 int rank = 1;
                 foreach (var it in Root.FindChildren<ISequence>(null).First().Items)

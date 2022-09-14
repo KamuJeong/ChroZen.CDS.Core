@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.InstrumentModel
+namespace CDS.Core
 {
     public enum DeviceStatus
     {
@@ -16,10 +16,5 @@ namespace CDS.InstrumentModel
         PostRun,
         PostWork,
         Error,
-    }
-
-    public class DeviceState
-    {
-        public DeviceStatus Status { get; internal set; }
     }
 }

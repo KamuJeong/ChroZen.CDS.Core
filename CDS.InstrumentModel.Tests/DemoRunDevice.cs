@@ -21,13 +21,13 @@ namespace CDS.InstrumentModel.Tests
 
         protected override bool Ready()
         {
-            ChangeStatus(DeviceStatus.Ready);
+            Status = DeviceStatus.Ready;
             return true;
         }
 
         protected override bool Run()
         {
-            ChangeStatus(DeviceStatus.Run);
+            Status = DeviceStatus.Run;
             return true;
         }
 

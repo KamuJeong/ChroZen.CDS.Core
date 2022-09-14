@@ -14,7 +14,7 @@ namespace CDS.InstrumentModel.Tests
         }
         public override void StopRun()
         {
-            ChangeStatus(DeviceStatus.PostRun);
+            Status = DeviceStatus.PostRun;
         }
 
         protected override bool PostRun()

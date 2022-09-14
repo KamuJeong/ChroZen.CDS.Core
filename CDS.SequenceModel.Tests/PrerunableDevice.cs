@@ -12,14 +12,12 @@ namespace CDS.SequenceModel.Tests
     {
         public PrerunableDevice(ModelBase? parent, string? name) : base(parent, name)
         {
-            State = new DeviceState();
         }
 
-        public override DeviceState State { get; init; }
 
         public override Task<bool> ConnectAsync(CancellationToken token)
         {
-            ChangeStatus(DeviceStatus.NotReady);
+            Status = DeviceStatus.NotReady;
             return Task.FromResult(true);
         }
 
@@ -31,7 +29,7 @@ namespace CDS.SequenceModel.Tests
         {
             base.OnTimerTick(ts);
 
-            if(Parent is Instrument instrument && State.Status == DeviceStatus.PreRun)
+            if(Parent is Instrument instrument && Status == DeviceStatus.PreRun)
             {
                 instrument.Run();
             }
@@ -63,13 +61,13 @@ namespace CDS.SequenceModel.Tests
 
         protected override bool PreRun()
         {
-            ChangeStatus(DeviceStatus.PreRun);
+            Status = DeviceStatus.PreRun;
             return true;
         }
 
         protected override bool Ready()
         {
-            ChangeStatus(DeviceStatus.Ready);
+            Status = DeviceStatus.Ready;
             return true;
         }
 
@@ -79,7 +77,7 @@ namespace CDS.SequenceModel.Tests
 
         protected override bool Run()
         {
-            ChangeStatus(DeviceStatus.NotReady);
+            Status = DeviceStatus.NotReady;
             return false;
         }
 

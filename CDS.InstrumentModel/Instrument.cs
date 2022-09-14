@@ -18,41 +18,41 @@ namespace CDS.InstrumentModel
 
             if (sender is Device device)
             {
-                if (device.State.Status == DeviceStatus.Error)
+                if (device.Status == DeviceStatus.Error)
                 {
                     foreach (var d in Devices)
                         d.HaltWrap();
 
                     ChangeStatus(InstrumentStatus.Error);
                 }
-                else if (State.Status == InstrumentStatus.Ready && device.State.Status == DeviceStatus.NotReady)
+                else if (State.Status == InstrumentStatus.Ready && device.Status == DeviceStatus.NotReady)
                 {
                     ChangeStatus(InstrumentStatus.NotReady);
                 }
-                else if (State.Status == InstrumentStatus.NotReady && device.State.Status == DeviceStatus.Ready)
+                else if (State.Status == InstrumentStatus.NotReady && device.Status == DeviceStatus.Ready)
                 {
-                    if (Devices.All(d => d.State.Status == DeviceStatus.Ready))
+                    if (Devices.All(d => d.Status == DeviceStatus.Ready))
                     {
                         ChangeStatus(InstrumentStatus.Ready);
                     }
                 }
                 else if (State.Status == InstrumentStatus.Run)
                 {
-                    if (Devices.All(d => d.State.Status != DeviceStatus.Run))
+                    if (Devices.All(d => d.Status != DeviceStatus.Run))
                     {
                         PostRun();
                     }
                 }
                 else if (State.Status == InstrumentStatus.PostRun)
                 {
-                    if (Devices.All(d => d.State.Status != DeviceStatus.PostRun))
+                    if (Devices.All(d => d.Status != DeviceStatus.PostRun))
                     {
                         PostWork();
                     }
                 }
                 else if (State.Status == InstrumentStatus.PostWork)
                 {
-                    if (Devices.All(d => d.State.Status != DeviceStatus.PostWork))
+                    if (Devices.All(d => d.Status != DeviceStatus.PostWork))
                     {
                         NextInjectOrFinish();
                     }
@@ -196,7 +196,7 @@ namespace CDS.InstrumentModel
 
         public void PostRun()
         {
-            if (State.Status == InstrumentStatus.Run && !Devices.Any(d => d.State.Status == DeviceStatus.Run))
+            if (State.Status == InstrumentStatus.Run && !Devices.Any(d => d.Status == DeviceStatus.Run))
             {
                 FinishAcquisition();
 
@@ -216,7 +216,7 @@ namespace CDS.InstrumentModel
 
         public void PostWork()
         {
-            if (State.Status == InstrumentStatus.PostRun && !Devices.Any(d => d.State.Status == DeviceStatus.PostRun))
+            if (State.Status == InstrumentStatus.PostRun && !Devices.Any(d => d.Status == DeviceStatus.PostRun))
             {
                 ChangeStatus(InstrumentStatus.PostWork);
 
@@ -229,7 +229,7 @@ namespace CDS.InstrumentModel
 
         private void NextInjectOrFinish()
         {
-            if (State.Status == InstrumentStatus.PostWork && !Devices.Any(d => d.State.Status == DeviceStatus.PostWork))
+            if (State.Status == InstrumentStatus.PostWork && !Devices.Any(d => d.Status == DeviceStatus.PostWork))
             {
                 if (State.HaltReserved)
                 {

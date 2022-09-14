@@ -15,7 +15,7 @@ namespace CDS.InstrumentModel.Tests
 
         protected override bool PostWork()
         {
-            ChangeStatus(DeviceStatus.PostWork);
+            Status = DeviceStatus.PostWork;
             return true;
         }
 

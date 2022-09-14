@@ -19,7 +19,7 @@ namespace CDS.InstrumentModel.Tests
 
         protected override bool PreRun()
         {
-            ChangeStatus(DeviceStatus.PreRun);
+            Status = DeviceStatus.PreRun;
             return true;
         }
 

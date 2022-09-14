@@ -12,5 +12,7 @@ namespace CDS.Core
         String? SerialNumber { get; }
         Uri? Uri { get; }
         String? Model { get; }       
+
+        DeviceStatus Status { get; }
     }
 }

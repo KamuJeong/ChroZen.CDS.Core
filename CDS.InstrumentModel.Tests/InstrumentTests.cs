@@ -21,7 +21,7 @@ namespace CDS.InstrumentModel.Tests
                 if (s is Instrument inst)
                     TestContext.WriteLine($"{inst.Name}: {inst.State.Status}");
                 else if (s is Device dev)
-                    TestContext.WriteLine($"\t{dev.Name}: {dev.State.Status}");
+                    TestContext.WriteLine($"\t{dev.Name}: {dev.Status}");
             };
 
             new DemoNotReadyDevice(instrument, "NotReadyDevice");
@@ -36,7 +36,7 @@ namespace CDS.InstrumentModel.Tests
             instrument?.ConnectAsync().Wait();
 
             Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
-            CollectionAssert.AreEqual(instrument?.Devices.Select(d => d.State.Status).ToArray(),
+            CollectionAssert.AreEqual(instrument?.Devices.Select(d => d.Status).ToArray(),
                                         instrument?.Devices.Select(d => DeviceStatus.NotReady).ToArray());
         }
 
@@ -46,7 +46,7 @@ namespace CDS.InstrumentModel.Tests
             instrument?.ConnectAsync().Wait();
             instrument?.Ready();
             Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
-            Assert.AreEqual(DeviceStatus.Ready, instrument?.FindChildren<Device>("ReadyDevice").First().State.Status);
+            Assert.AreEqual(DeviceStatus.Ready, instrument?.FindChildren<Device>("ReadyDevice").First().Status);
         }
 
         [TestMethod]
@@ -59,7 +59,7 @@ namespace CDS.InstrumentModel.Tests
             instrument?.Ready();
             instrument?.PreRun();
             Assert.AreEqual(InstrumentStatus.PreRun, instrument?.State.Status);
-            Assert.AreEqual(DeviceStatus.PreRun, instrument?.FindChildren<Device>("PreRunDevice").First().State.Status);
+            Assert.AreEqual(DeviceStatus.PreRun, instrument?.FindChildren<Device>("PreRunDevice").First().Status);
             instrument?.Stop();
 
             TestContext?.WriteLine($">> no more <<");
@@ -77,7 +77,7 @@ namespace CDS.InstrumentModel.Tests
             instrument?.Ready();
             instrument?.PreRun();
             Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
-            Assert.AreEqual(DeviceStatus.NotReady, instrument?.FindChildren<Device>("PreRunDevice").First().State.Status);
+            Assert.AreEqual(DeviceStatus.NotReady, instrument?.FindChildren<Device>("PreRunDevice").First().Status);
         }
 
         [TestMethod]
@@ -90,7 +90,7 @@ namespace CDS.InstrumentModel.Tests
             instrument?.Ready();
             instrument?.Run();
             Assert.AreEqual(InstrumentStatus.Run, instrument?.State.Status);
-            Assert.AreEqual(DeviceStatus.Run, instrument?.FindChildren<Device>("RunDevice").First().State.Status);
+            Assert.AreEqual(DeviceStatus.Run, instrument?.FindChildren<Device>("RunDevice").First().Status);
 
             instrument?.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
             Assert.AreEqual(InstrumentStatus.NotReady, instrument.State.Status);
@@ -100,7 +100,7 @@ namespace CDS.InstrumentModel.Tests
             instrument.PreRun();
             instrument.Run();
             Assert.AreEqual(InstrumentStatus.Run, instrument.State.Status);
-            Assert.AreEqual(DeviceStatus.Run, instrument.FindChildren<Device>("RunDevice").First().State.Status);
+            Assert.AreEqual(DeviceStatus.Run, instrument.FindChildren<Device>("RunDevice").First().Status);
             instrument.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
             Assert.AreEqual(InstrumentStatus.PreRun, instrument.State.Status);
         }
@@ -117,7 +117,7 @@ namespace CDS.InstrumentModel.Tests
             instrument.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
 
             Assert.AreEqual(InstrumentStatus.PostRun, instrument.State.Status);
-            Assert.AreEqual(DeviceStatus.PostRun, instrument.FindChildren<Device>("PostRunDevice").First().State.Status);
+            Assert.AreEqual(DeviceStatus.PostRun, instrument.FindChildren<Device>("PostRunDevice").First().Status);
 
             instrument.FindChildren<DemoPostRunDevice>(null).All(d => { d.StopPostRun(); return true; });
 
@@ -136,7 +136,7 @@ namespace CDS.InstrumentModel.Tests
             instrument.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
 
             Assert.AreEqual(InstrumentStatus.PostWork, instrument.State.Status);
-            Assert.AreEqual(DeviceStatus.PostWork, instrument.FindChildren<Device>("PostWorkDevice").First().State.Status);
+            Assert.AreEqual(DeviceStatus.PostWork, instrument.FindChildren<Device>("PostWorkDevice").First().Status);
 
             instrument.FindChildren<DemoPostWorkDevice>(null).All(d => { d.StopPostWork(); return true; });
 

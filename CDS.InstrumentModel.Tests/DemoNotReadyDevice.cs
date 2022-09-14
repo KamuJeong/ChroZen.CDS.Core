@@ -11,14 +11,11 @@ namespace CDS.InstrumentModel.Tests
     {
         public DemoNotReadyDevice(ModelBase? parent, string? name) : base(parent, name)
         {
-            State = new DemoDeviceState();
         }
-
-        public override DeviceState State { get; init; }
 
         public override Task<bool> ConnectAsync(CancellationToken token)
         {
-            ChangeStatus(DeviceStatus.NotReady);
+            Status = DeviceStatus.NotReady;
             return Task.FromResult(true);
         }
 
@@ -33,11 +30,11 @@ namespace CDS.InstrumentModel.Tests
 
         public override bool SetMethod(IMethod? method) => true;
 
-        protected override void Halt() => ChangeStatus(DeviceStatus.NotReady);
+        protected override void Halt() => Status = DeviceStatus.NotReady;
 
         protected override Task<bool> LoadMethodAsync()
         {
-            if(new[] { DeviceStatus.NotReady, DeviceStatus.Ready }.Contains(State.Status))
+            if(new[] { DeviceStatus.NotReady, DeviceStatus.Ready }.Contains(Status))
             {
                 return Task.FromResult(true);
             }
@@ -46,7 +43,7 @@ namespace CDS.InstrumentModel.Tests
 
         protected override bool SendMethod()
         {
-            if (new[] { DeviceStatus.NotReady, DeviceStatus.Ready, DeviceStatus.PreRun }.Contains(State.Status))
+            if (new[] { DeviceStatus.NotReady, DeviceStatus.Ready, DeviceStatus.PreRun }.Contains(Status))
             {
                 return true;
             }
@@ -62,12 +59,12 @@ namespace CDS.InstrumentModel.Tests
 
         protected override bool Ready() => false;
 
-        protected override void Reset() => ChangeStatus(DeviceStatus.NotReady);
+        protected override void Reset() => Status = DeviceStatus.NotReady;
 
         protected override bool Run() => false;
 
 
-        protected override void Stop() => ChangeStatus(DeviceStatus.NotReady);
+        protected override void Stop() => Status = DeviceStatus.NotReady;
 
         protected override void CheckReadyStatus()
         {
