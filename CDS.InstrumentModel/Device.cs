@@ -57,7 +57,12 @@ namespace CDS.InstrumentModel
         protected abstract void CheckReadyStatus();
 
         public Uri? Uri { get; set; }
-        public Task<bool> ConnectAsyncWrap()
+
+        public string? SerialNumber { get; set; }
+
+        public string? Model { get; set; }
+
+        internal Task<bool> ConnectAsyncWrap()
         {
             _tokenSource?.Cancel();
             _tokenSource = new CancellationTokenSource();
@@ -68,7 +73,7 @@ namespace CDS.InstrumentModel
 
         public abstract Task<bool> ConnectAsync(CancellationToken token);
 
-        public void DisconnectWrap()
+        internal void DisconnectWrap()
         {
             Disconnect();
 
@@ -102,7 +107,7 @@ namespace CDS.InstrumentModel
         {
             return LoadMethodAsync();
         }
-        internal protected abstract Task<bool> LoadMethodAsync();
+        protected abstract Task<bool> LoadMethodAsync();
 
         internal protected abstract bool Ready();
         internal protected abstract bool PreRun();

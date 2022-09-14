@@ -1,5 +1,4 @@
-﻿using CDS.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,9 +6,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.InstrumentModel
+namespace Communicator
 {
-    public class TcpCommunicator : ICommunicator
+    public class Tcp : ICommunicator
     {
         private Task? watchmanTask;
 

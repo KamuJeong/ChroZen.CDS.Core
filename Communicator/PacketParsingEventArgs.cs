@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDS.Core
+namespace Communicator
 {
-    public class PacketParsingEventArgs : EventArgs
+    public class PacketParsingEventArgs
     {
         public PacketParsingEventArgs(byte[] buffer, int length)
         {
