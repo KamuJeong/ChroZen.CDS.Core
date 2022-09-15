@@ -19,9 +19,9 @@ namespace CDS.InstrumentModel.Tests
             instrument.StatusChanged += (s, e) =>
             {
                 if (s is Instrument inst)
-                    TestContext.WriteLine($"{inst.Name}: {inst.State.Status}");
+                    TestContext?.WriteLine($"{inst.Name}: {inst.State.Status}");
                 else if (s is Device dev)
-                    TestContext.WriteLine($"\t{dev.Name}: {dev.Status}");
+                    TestContext?.WriteLine($"\t{dev.Name}: {dev.Status}");
             };
 
             new DemoNotReadyDevice(instrument, "NotReadyDevice");
@@ -55,7 +55,7 @@ namespace CDS.InstrumentModel.Tests
             instrument?.ConnectAsync().Wait();
 
             TestContext?.WriteLine($">> sequence <<");
-            
+
             instrument?.Ready();
             instrument?.PreRun();
             Assert.AreEqual(InstrumentStatus.PreRun, instrument?.State.Status);
@@ -93,16 +93,16 @@ namespace CDS.InstrumentModel.Tests
             Assert.AreEqual(DeviceStatus.Run, instrument?.FindChildren<Device>("RunDevice").First().Status);
 
             instrument?.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
-            Assert.AreEqual(InstrumentStatus.NotReady, instrument.State.Status);
+            Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
 
-            TestContext.WriteLine(">> sequence run <<");
-            instrument.Ready();
-            instrument.PreRun();
-            instrument.Run();
-            Assert.AreEqual(InstrumentStatus.Run, instrument.State.Status);
-            Assert.AreEqual(DeviceStatus.Run, instrument.FindChildren<Device>("RunDevice").First().Status);
-            instrument.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
-            Assert.AreEqual(InstrumentStatus.PreRun, instrument.State.Status);
+            TestContext?.WriteLine(">> sequence run <<");
+            instrument?.Ready();
+            instrument?.PreRun();
+            instrument?.Run();
+            Assert.AreEqual(InstrumentStatus.Run, instrument?.State.Status);
+            Assert.AreEqual(DeviceStatus.Run, instrument?.FindChildren<Device>("RunDevice").First().Status);
+            instrument?.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
+            Assert.AreEqual(InstrumentStatus.PreRun, instrument?.State.Status);
         }
 
         [TestMethod]
@@ -110,18 +110,18 @@ namespace CDS.InstrumentModel.Tests
         {
             new DemoPostRunDevice(instrument, "PostRunDevice");
 
-            instrument.ConnectAsync().Wait();
+            instrument?.ConnectAsync().Wait();
 
-            instrument.Ready();
-            instrument.Run();
-            instrument.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
+            instrument?.Ready();
+            instrument?.Run();
+            instrument?.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
 
-            Assert.AreEqual(InstrumentStatus.PostRun, instrument.State.Status);
-            Assert.AreEqual(DeviceStatus.PostRun, instrument.FindChildren<Device>("PostRunDevice").First().Status);
+            Assert.AreEqual(InstrumentStatus.PostRun, instrument?.State.Status);
+            Assert.AreEqual(DeviceStatus.PostRun, instrument?.FindChildren<Device>("PostRunDevice").First().Status);
 
-            instrument.FindChildren<DemoPostRunDevice>(null).All(d => { d.StopPostRun(); return true; });
+            instrument?.FindChildren<DemoPostRunDevice>(null).All(d => { d.StopPostRun(); return true; });
 
-            Assert.AreEqual(InstrumentStatus.NotReady, instrument.State.Status);
+            Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
         }
 
         [TestMethod]
@@ -129,41 +129,42 @@ namespace CDS.InstrumentModel.Tests
         {
             new DemoPostWorkDevice(instrument, "PostWorkDevice");
 
-            instrument.ConnectAsync().Wait();
+            instrument?.ConnectAsync().Wait();
 
-            instrument.Ready();
-            instrument.Run();
-            instrument.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
+            instrument?.Ready();
+            instrument?.Run();
+            instrument?.FindChildren<DemoRunDevice>(null).All(d => { d.StopRun(); return true; });
 
-            Assert.AreEqual(InstrumentStatus.PostWork, instrument.State.Status);
-            Assert.AreEqual(DeviceStatus.PostWork, instrument.FindChildren<Device>("PostWorkDevice").First().Status);
+            Assert.AreEqual(InstrumentStatus.PostWork, instrument?.State.Status);
+            Assert.AreEqual(DeviceStatus.PostWork, instrument?.FindChildren<Device>("PostWorkDevice").First().Status);
 
-            instrument.FindChildren<DemoPostWorkDevice>(null).All(d => { d.StopPostWork(); return true; });
+            instrument?.FindChildren<DemoPostWorkDevice>(null).All(d => { d.StopPostWork(); return true; });
 
-            Assert.AreEqual(InstrumentStatus.NotReady, instrument.State.Status);
+            Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
         }
 
         [TestMethod]
         public void TimerTickCallback()
         {
-            var run = instrument.FindChildren<DemoRunDevice>("RunDevice").First();
-            run.TimerTick += (s, ts) =>
-            {
-                if (instrument.State.Status == InstrumentStatus.Run && instrument.State.ElapsedTime >= TimeSpan.FromSeconds(1.0))
+            var run = instrument?.FindChildren<DemoRunDevice>("RunDevice").FirstOrDefault();
+            if (run != null)
+                run.TimerTick += (s, ts) =>
                 {
-                    TestContext.WriteLine($">> Stop : {instrument.State.ElapsedTime}");
-                    run.StopRun();
-                }
-            };
+                    if (instrument?.State.Status == InstrumentStatus.Run && instrument?.State.ElapsedTime >= TimeSpan.FromSeconds(1.0))
+                    {
+                        TestContext?.WriteLine($">> Stop : {instrument?.State.ElapsedTime}");
+                        run.StopRun();
+                    }
+                };
 
-            instrument.ConnectAsync().Wait();
+            instrument?.ConnectAsync().Wait();
 
-            instrument.Ready();
-            instrument.Run();
-            Assert.AreEqual(InstrumentStatus.Run, instrument.State.Status);
+            instrument?.Ready();
+            instrument?.Run();
+            Assert.AreEqual(InstrumentStatus.Run, instrument?.State.Status);
 
             Thread.Sleep(1500);
-            Assert.AreEqual(InstrumentStatus.NotReady, instrument.State.Status);
+            Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
         }
     }
 }

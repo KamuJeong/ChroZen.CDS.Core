@@ -19,7 +19,8 @@ namespace CDS.SequenceModel.Tests
             if (Parent is Instrument instrument && Status == DeviceStatus.PreRun)
             {
                 int rank = 1;
-                foreach (var it in Root.FindChildren<ISequence>(null).First().Items)
+                foreach (var it in Root?.FindChildren<ISequence>(null).First().Items 
+                                        ?? Enumerable.Empty<ISequenceItem>())
                 {
                     if (it == instrument.State.SequenceItem)
                         break;

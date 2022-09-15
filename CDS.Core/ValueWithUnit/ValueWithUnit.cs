@@ -80,5 +80,9 @@ namespace CDS.Core
             return Comparer<double>.Default.Compare(v1.Value, v2.Value);
         }
 
+        public override int GetHashCode()
+        {
+            return Convert(null).ToString().GetHashCode();
+        }
     }
 }
