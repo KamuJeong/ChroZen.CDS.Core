@@ -24,6 +24,8 @@ namespace ChromassProtocol
 
         public TPacket Packet;
 
+        private TaskCompletionSource? taskCompletionSource;
+
         public event EventHandler<PacketUpdatedEventArgs<TPacket>>? Updated;
 
         public byte[] Binary => this.ToBytes<TPacket>();
@@ -32,6 +34,14 @@ namespace ChromassProtocol
         {
             Packet = buf.ConvertTo<TPacket>();
             Updated?.Invoke(src, new PacketUpdatedEventArgs<TPacket>(this, index));
+
+            taskCompletionSource?.SetResult();
+        }
+
+        public async Task<bool> WaitAnUpdateFor(int mSecond)
+        {
+            taskCompletionSource = new TaskCompletionSource();
+            return  taskCompletionSource.Task == await Task.WhenAny(Task.Delay(mSecond), taskCompletionSource.Task);
         }
     }
 }

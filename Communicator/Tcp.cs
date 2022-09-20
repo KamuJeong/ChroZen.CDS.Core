@@ -19,7 +19,7 @@ namespace Communicator
         private int receivedPos = 0;
         private Byte[] receivedBuffer = new byte[1024];
 
-        public async Task? ConnectAsync(Uri uri, CancellationToken token)
+        public async Task ConnectAsync(Uri uri, CancellationToken token)
         {
             if (!IsConnected)
             {

@@ -5,7 +5,7 @@
         bool IsConnected { get; }
 
         void Close();
-        Task? ConnectAsync(Uri uri, CancellationToken token);
+        Task ConnectAsync(Uri uri, CancellationToken token);
 
         event EventHandler<PacketParsingEventArgs>? PacketParsing;
 
