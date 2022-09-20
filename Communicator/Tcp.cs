@@ -78,6 +78,7 @@ namespace Communicator
                 }
 
                 Array.Copy(buffer, 0, receivedBuffer, receivedPos, buffer.Length);
+                receivedPos += buffer.Length;
 
                 try
                 {

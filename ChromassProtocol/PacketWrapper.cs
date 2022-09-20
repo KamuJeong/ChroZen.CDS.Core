@@ -40,8 +40,15 @@ namespace ChromassProtocol
 
         public async Task<bool> WaitAnUpdateFor(int mSecond)
         {
-            taskCompletionSource = new TaskCompletionSource();
-            return  taskCompletionSource.Task == await Task.WhenAny(Task.Delay(mSecond), taskCompletionSource.Task);
+            if (mSecond > 0)
+            {
+                taskCompletionSource = new TaskCompletionSource();
+                return taskCompletionSource.Task == await Task.WhenAny(Task.Delay(mSecond), taskCompletionSource.Task);
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
