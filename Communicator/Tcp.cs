@@ -45,12 +45,18 @@ namespace Communicator
                     int rlen = NetworkStream.Read(buffer, pos, Math.Min(4096, buffer.Length - pos));
                     if (rlen <= 0)
                     {
-                        synchronizationContext?.Post(new SendOrPostCallback(o => OnReceived(o as byte[])), null);
+                        if (synchronizationContext != null)
+                            synchronizationContext.Post(new SendOrPostCallback(o => OnReceived(o as byte[])), null);
+                        else
+                            OnReceived(null);
                         break;
                     }
 
                     pos += rlen;
-                    synchronizationContext?.Post(new SendOrPostCallback(o => OnReceived(o as byte[])), buffer.Take(pos).ToArray());
+                    if (synchronizationContext != null)
+                        synchronizationContext.Post(new SendOrPostCallback(o => OnReceived(o as byte[])), buffer.Take(pos).ToArray());
+                    else
+                        OnReceived(buffer.Take(pos).ToArray());
                     pos = 0;
                 }
             }

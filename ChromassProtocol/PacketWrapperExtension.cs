@@ -71,24 +71,25 @@ namespace ChromassProtocol
             return obj;
         }
 
-        public static void Assemble<T>(this PacketWrapper<T> wrapper, object caller, byte[] src, int index, int offset, int size) where T : struct
+        public static void Assemble<T>(this PacketWrapper<T> wrapper, object caller, ReadOnlySpan<byte> slot, int index, int offset) where T : struct
         {
             byte[] assemble = wrapper.Binary;
 
-            if (assemble.Length < offset + size || src.Length < offset + size + 24)
+            if (assemble.Length < offset + slot.Length)
                 throw new ArgumentOutOfRangeException();
 
-            Array.Copy(src, offset + 24, assemble, offset, size);
+            var dest = new Span<byte>(assemble, offset, slot.Length);
+            slot.Slice(offset, slot.Length).CopyTo(dest);
 
             wrapper.Update(caller, assemble, index);
         }
 
-        public static byte[] RequestPacket<T>(this PacketWrapper<T> wrapper, int index = 0) where T : struct
+        public static byte[] RequestPacket<T>(this PacketWrapper<T> wrapper, int index = 0, uint id = 0) where T : struct
         {
             return new Header
             {
                 Length = 24,
-                Id = 0,
+                Id = id,
                 Code = wrapper.Code,
                 Index = index,
                 SlotOffset = 0,
@@ -96,32 +97,25 @@ namespace ChromassProtocol
             }.ToBytes();
         }
 
-        public static byte[] SendPacket<T>(this PacketWrapper<T> wrapper, int index = 0) where T : struct
+        public static byte[] SendPacket<T>(this PacketWrapper<T> wrapper, int index = 0, uint id = 0, int offset = 0, int size = -1) where T : struct
         {
             var arr = wrapper.Binary;
+            size = size < 0 ? arr.Length : size;
             Header header = new Header
             {
-                Length = 24 + arr.Length,
-                Id = 0,
+                Length = 24 + size,
+                Id = id,
                 Code = wrapper.Code,
                 Index = index,
-                SlotOffset = 0,
-                SlotSize = arr.Length,
+                SlotOffset = offset,
+                SlotSize = size,
             };
             return wrapper.ToBytes(ref header);
         }
 
-        public static byte[] SendOkPacket<T>(this PacketWrapper<T> wrapper, int index = 0) where T : struct
+        public static byte[] SendOkPacket<T>(this PacketWrapper<T> wrapper, int index = 0, int id = 0) where T : struct
         {
-            return new Header
-            {
-                Length = 24,
-                Id = 0,
-                Code = wrapper.Code,
-                Index = index,
-                SlotOffset = 0,
-                SlotSize = 0
-            }.ToBytes();
+            return SendPacket<T>(wrapper, index, size: 0);
         }
 
     }

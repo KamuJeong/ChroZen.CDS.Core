@@ -28,7 +28,7 @@ namespace ChromassProtocol
 
         public byte[] Binary => this.ToBytes<TPacket>();
 
-        public void Update(object src, byte[] buf, int index=0)
+        internal void Update(object src, byte[] buf, int index=0)
         {
             Packet = buf.ConvertTo<TPacket>();
             Updated?.Invoke(src, new PacketUpdatedEventArgs<TPacket>(this, index));
