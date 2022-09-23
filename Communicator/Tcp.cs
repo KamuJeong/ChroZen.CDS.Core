@@ -23,6 +23,8 @@ namespace Communicator
         {
             if (!IsConnected)
             {
+                receivedPos = 0;
+
                 tcpClient = new TcpClient();
                 await tcpClient.ConnectAsync(uri.Host, uri.Port, token);
                 NetworkStream = tcpClient.GetStream();
@@ -113,6 +115,7 @@ namespace Communicator
             else
             {
                 Close();
+                PacketParsing?.Invoke(this, new PacketParsingEventArgs(null, 0));
             }
         }
 
@@ -142,6 +145,7 @@ namespace Communicator
             {
                 tcpClient = null;
                 NetworkStream = null;
+                receivedPos = 0;
             }
 
             watchmanTask?.Wait();
