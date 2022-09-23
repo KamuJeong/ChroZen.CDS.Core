@@ -26,10 +26,24 @@ namespace Communicator
                 receivedPos = 0;
 
                 tcpClient = new TcpClient();
-                await tcpClient.ConnectAsync(uri.Host, uri.Port, token);
-                NetworkStream = tcpClient.GetStream();
+                try
+                {
+                    await tcpClient.ConnectAsync(uri.Host, uri.Port, token);
 
-                watchmanTask = Task.Factory.StartNew(c => WatchMan(c), SynchronizationContext.Current, TaskCreationOptions.LongRunning);
+                    if (tcpClient.Connected)
+                    {
+                        NetworkStream = tcpClient.GetStream();
+                        watchmanTask = Task.Factory.StartNew(c => WatchMan(c), SynchronizationContext.Current, TaskCreationOptions.LongRunning);
+                    }
+                    else
+                    {
+                        Close();
+                    }
+                }
+                catch
+                {
+                    Close();
+                }
             }
         }
 
