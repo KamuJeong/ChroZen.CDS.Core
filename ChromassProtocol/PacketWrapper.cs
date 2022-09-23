@@ -43,7 +43,8 @@ namespace ChromassProtocol
             if (mSecond > 0)
             {
                 taskCompletionSource = new TaskCompletionSource();
-                return taskCompletionSource.Task == await Task.WhenAny(Task.Delay(mSecond), taskCompletionSource.Task);
+                await await Task.WhenAny(Task.Delay(mSecond), taskCompletionSource.Task);
+                return taskCompletionSource.Task.IsCompleted;
             }
             else
             {
