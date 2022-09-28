@@ -51,15 +51,14 @@ namespace Communicator
         {
             SynchronizationContext? synchronizationContext = context as SynchronizationContext;
 
-            int pos = 0;
             byte[] buffer = new byte[4096];
 
             try
             {
                 while (NetworkStream != null)
                 {
-                    int rlen = NetworkStream.Read(buffer, pos, Math.Min(4096, buffer.Length - pos));
-                    if (rlen <= 0)
+                    int len = NetworkStream.Read(buffer, 0, buffer.Length);
+                    if (len <= 0)
                     {
                         if (synchronizationContext != null)
                             synchronizationContext.Post(new SendOrPostCallback(o => OnReceived(o as byte[])), null);
@@ -67,13 +66,10 @@ namespace Communicator
                             OnReceived(null);
                         break;
                     }
-
-                    pos += rlen;
                     if (synchronizationContext != null)
-                        synchronizationContext.Post(new SendOrPostCallback(o => OnReceived(o as byte[])), buffer.Take(pos).ToArray());
+                        synchronizationContext.Post(new SendOrPostCallback(o => OnReceived(o as byte[])), buffer.Take(len).ToArray());
                     else
-                        OnReceived(buffer.Take(pos).ToArray());
-                    pos = 0;
+                        OnReceived(buffer.Take(len).ToArray());
                 }
             }
             catch (Exception e)
@@ -125,7 +121,8 @@ namespace Communicator
                 }
                 catch
                 {
-                    throw new InvalidOperationException("pasing error");
+                    if (IsConnected)
+                        throw new InvalidOperationException("pasing error");
                 }
 
                 if (receivedPos == 0 && receivedBuffer.Length > 1024)
