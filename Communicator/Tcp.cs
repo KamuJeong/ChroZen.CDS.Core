@@ -79,6 +79,11 @@ namespace Communicator
             catch (Exception e)
             {
                 Debug.WriteLine(e);
+
+                if (synchronizationContext != null)
+                    synchronizationContext.Post(new SendOrPostCallback(o => OnReceived(o as byte[])), null);
+                else
+                    OnReceived(null);
             }
         }
 
@@ -161,8 +166,6 @@ namespace Communicator
                 NetworkStream = null;
                 receivedPos = 0;
             }
-
-            watchmanTask?.Wait();
         }
 
 

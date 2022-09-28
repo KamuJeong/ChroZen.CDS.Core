@@ -20,7 +20,7 @@ namespace ChromassProtocols.APIs
         {
             if (src != this && src.Wrapper != Wrapper)
             {
-                src.Wrapper.Packet = src.Wrapper.Packet;
+                Wrapper.Packet = src.Wrapper.Packet;
                 CallAction();
             }
         }
