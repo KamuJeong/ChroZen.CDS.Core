@@ -119,10 +119,10 @@ namespace Communicator
                             Array.Copy(receivedBuffer, ParsingArgs.TotalParsed, receivedBuffer, 0, receivedPos);
                     }
                 }
-                catch
+                catch(Exception e)
                 {
                     if (IsConnected)
-                        throw new InvalidOperationException("pasing error");
+                        throw new InvalidOperationException("pasing error", e);
                 }
 
                 if (receivedPos == 0 && receivedBuffer.Length > 1024)
