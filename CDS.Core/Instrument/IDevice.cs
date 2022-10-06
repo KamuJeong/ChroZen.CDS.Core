@@ -14,5 +14,7 @@ namespace CDS.Core
         String? Model { get; }       
 
         DeviceStatus Status { get; }
+
+        TimeSpan RunTime { get; }
     }
 }

@@ -12,12 +12,12 @@ namespace CDS.InstrumentModel
         public SignalSet(ModelBase? parent, string? name) : base(parent, name)
         {
         }
-
+        public bool Use { get; set; } = true;
         public int Index { get; set; }
         public IDevice? Device { get; set; }
         public int Channel { get; set; }
-        public string? Unit { get; set; }
-        public TimeValue? Time { get; set; }
+        public string? Unit { get; set; } 
+        public TimeSpan Time { get; set; }
         public double Hz { get; set; }
     }
 }

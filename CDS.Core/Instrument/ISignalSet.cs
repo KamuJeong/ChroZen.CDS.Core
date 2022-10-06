@@ -8,12 +8,12 @@ namespace CDS.Core
 {
     public interface ISignalSet
     {
+        bool Use { get; set; }
         int Index { get; set; }
-        string? Name { get; set; }
         IDevice? Device { get; }
         int Channel { get; }
         string? Unit { get; }
-        TimeValue? Time { get; set; }
+        TimeSpan Time { get; set; }
         double Hz { get; set; }
     }
 }

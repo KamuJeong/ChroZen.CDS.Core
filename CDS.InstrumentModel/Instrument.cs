@@ -298,5 +298,18 @@ namespace CDS.InstrumentModel
             SetProject(sequenceItem?.Project);
             SetMethod(sequenceItem?.Method);
         }
+
+        public TimeSpan TotalRunTime
+            => new TimeSpan(
+                Math.Max(Devices.Select(d => d.RunTime.Ticks).DefaultIfEmpty().Max(),
+                         Signals.Select(s => s.Use ? s.Time.Ticks : 0).DefaultIfEmpty().Max())
+                );
+
+        public TimeSpan GetRunTime(IDevice device)
+            => new TimeSpan(
+                Math.Max(device.RunTime.Ticks,
+                         Signals.Where(s => s.Use && s.Device == device)
+                                .Select(s => s.Time.Ticks).DefaultIfEmpty().Max())
+                );
     }
 }

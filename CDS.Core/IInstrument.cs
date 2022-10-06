@@ -9,6 +9,8 @@
         IEnumerable<IDevice> Devices { get; }
         IEnumerable<ISignalSet> Signals { get; }
 
+        TimeSpan TotalRunTime { get; }
+
         void Ready();
         void PreRun();
         void Run();
@@ -22,5 +24,7 @@
         void SetMethod(IMethod? method);
         void SetProject(IProject? project);
         void SetSequenceItem(ISequenceItem? sequenceItem);
+
+
     }
 }

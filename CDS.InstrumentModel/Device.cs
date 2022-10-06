@@ -113,6 +113,8 @@ namespace CDS.InstrumentModel
         }
         protected abstract Task<bool> LoadMethodAsync();
 
+        public abstract TimeSpan RunTime { get; }
+
         internal protected abstract bool Ready();
         internal protected abstract bool PreRun();
         internal protected abstract bool Run();
