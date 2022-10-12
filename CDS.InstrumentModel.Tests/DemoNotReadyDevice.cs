@@ -9,6 +9,8 @@ namespace CDS.InstrumentModel.Tests
 {
     public class DemoNotReadyDevice : Device
     {
+        public override TimeSpan RunTime => TimeSpan.Zero;
+
         public DemoNotReadyDevice(ModelBase? parent, string? name) : base(parent, name)
         {
         }

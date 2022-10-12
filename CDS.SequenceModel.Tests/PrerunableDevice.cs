@@ -10,6 +10,8 @@ namespace CDS.SequenceModel.Tests
 {
     internal class PrerunableDevice : Device
     {
+        public override TimeSpan RunTime => TimeSpan.Zero;
+
         public PrerunableDevice(ModelBase? parent, string? name) : base(parent, name)
         {
         }

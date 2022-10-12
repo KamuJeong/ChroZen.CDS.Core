@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace CDS.InstrumentModel.Tests
 {
+    [Refer("NotReady", typeof(DemoNotReadyDevice))]
+    [Refer("Run", typeof(DemoRunDevice))]
     public class DemoReadyDevice : DemoNotReadyDevice
     {
         public DemoReadyDevice(ModelBase? parent, string? name) : base(parent, name)

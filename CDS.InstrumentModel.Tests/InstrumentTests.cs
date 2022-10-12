@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CDS.Core;
+using System.Reflection;
 
 namespace CDS.InstrumentModel.Tests
 {
@@ -165,6 +166,16 @@ namespace CDS.InstrumentModel.Tests
 
             Thread.Sleep(1500);
             Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
+        }
+
+        [TestMethod]
+        public void ReferAttributeTest()
+        {
+            var ready = instrument?.FindChildren<Device>("ReadyDevice").FirstOrDefault();
+            foreach(var attr in ready!.GetType().GetCustomAttributes<ReferAttribute>())
+            {
+                TestContext?.WriteLine($"{attr.Key}: {attr.Type}");
+            }
         }
     }
 }
