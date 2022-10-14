@@ -30,11 +30,9 @@ namespace CDS.InstrumentModel.Tests
             
         }
 
-        public override bool SetMethod(IMethod? method) => true;
-
         protected override void Halt() => Status = DeviceStatus.NotReady;
 
-        protected override Task<bool> LoadMethodAsync()
+        protected override Task<bool> LoadMethodAsync(IMethod? method)
         {
             if(new[] { DeviceStatus.NotReady, DeviceStatus.Ready }.Contains(Status))
             {
@@ -43,7 +41,7 @@ namespace CDS.InstrumentModel.Tests
             return Task.FromResult(false);
         }
 
-        protected override bool SendMethod()
+        protected override bool SendMethod(IMethod? method)
         {
             if (new[] { DeviceStatus.NotReady, DeviceStatus.Ready, DeviceStatus.PreRun }.Contains(Status))
             {
@@ -68,8 +66,6 @@ namespace CDS.InstrumentModel.Tests
 
         protected override void Stop() => Status = DeviceStatus.NotReady;
 
-        protected override void CheckReadyStatus()
-        {
-        }
+        protected override bool CheckReadyStatus() => false;
     }
 }

@@ -166,10 +166,7 @@ namespace CDS.InstrumentModel
         {
             foreach (var d in Devices)
             {
-                if (d.SetMethod(State.Method))
-                {
-                    d.SendMethodWrap();
-                }
+                d.SendMethodWrap(State.Method);
             }
         }
 

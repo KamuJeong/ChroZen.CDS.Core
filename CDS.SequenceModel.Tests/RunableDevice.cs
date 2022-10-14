@@ -46,19 +46,14 @@ namespace CDS.SequenceModel.Tests
             throw new NotImplementedException();
         }
 
-        public override bool SetMethod(IMethod? method) => true;
-
-        protected override void CheckReadyStatus()
-        {
-            // nothing to do
-        }
+        protected override bool CheckReadyStatus() => true;
 
         protected override void Halt()
         {
 
         }
 
-        protected override Task<bool> LoadMethodAsync()
+        protected override Task<bool> LoadMethodAsync(IMethod? method)
         {
             throw new NotImplementedException();
         }
@@ -85,7 +80,7 @@ namespace CDS.SequenceModel.Tests
             return true;
         }
 
-        protected override bool SendMethod() => true;
+        protected override bool SendMethod(IMethod? method) => true;
 
         protected override void Stop()
         {

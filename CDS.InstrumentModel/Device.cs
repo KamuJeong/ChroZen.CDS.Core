@@ -39,12 +39,15 @@ namespace CDS.InstrumentModel
 
                 OnTimerTick(DateTime.Now - _launchTime);
                 TimerTick?.Invoke(this, DateTime.Now - _launchTime);
-                CheckReadyStatus();
+                if (new[] {DeviceStatus.NotReady, DeviceStatus.Ready}.Contains(Status))
+                {
+                    Status = CheckReadyStatus() ? DeviceStatus.Ready : DeviceStatus.NotReady;
+                }
             }
         }
 
         protected virtual void OnTimerTick(TimeSpan ts)     { }
-        protected abstract void CheckReadyStatus();
+        protected abstract bool CheckReadyStatus();
 
         public Uri? Uri { get; set; }
 
@@ -97,21 +100,20 @@ namespace CDS.InstrumentModel
 
         public abstract void Disconnect();
 
-        public abstract bool SetMethod(IMethod? method);
         public abstract void GetMethod(IMethod? method);
 
-        internal bool SendMethodWrap()
+        internal bool SendMethodWrap(IMethod? method)
         {
             Status = DeviceStatus.NotReady;
-            return SendMethod();
+            return SendMethod(method);
         }
-        protected abstract bool SendMethod();
+        protected abstract bool SendMethod(IMethod? method);
         
-        internal Task<bool> LoadMethodAsyncWrap()
+        internal Task<bool> LoadMethodAsyncWrap(IMethod? method)
         {
-            return LoadMethodAsync();
+            return LoadMethodAsync(method);
         }
-        protected abstract Task<bool> LoadMethodAsync();
+        protected abstract Task<bool> LoadMethodAsync(IMethod? method);
 
         public abstract TimeSpan RunTime { get; }
 

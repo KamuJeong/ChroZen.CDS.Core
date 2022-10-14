@@ -1,6 +1,7 @@
 using CDS.Core;
 using CDS.InstrumentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Runtime.InteropServices;
 
 namespace CDS.SequenceModel.Tests
 {
@@ -59,7 +60,7 @@ namespace CDS.SequenceModel.Tests
             instrument?.Run();
             Thread.Sleep(500);
 
-            Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
+            Assert.AreEqual(InstrumentStatus.Ready, instrument?.State.Status);
         }
 
         [TestMethod]
@@ -76,12 +77,14 @@ namespace CDS.SequenceModel.Tests
             sequence?.Ready();
             sequence?.Run();
 
-            Thread.Sleep(1500);
+            do
+            {
+                Thread.Sleep(2000);
+            } while (instrument?.State.Status != InstrumentStatus.Ready);
 
             Assert.IsTrue(sequence?.Items.All(i => i.State.Status == SequenceStatus.Finished));
             Assert.IsTrue(sequence?.Items.All(i => i.State.Counter == 1));
 
-            Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
         }
 
         [TestMethod]
@@ -101,14 +104,15 @@ namespace CDS.SequenceModel.Tests
             sequence?.Ready();
             sequence?.Run();
 
-            Thread.Sleep(1000);
+            do
+            {
+                Thread.Sleep(2000);
+            } while (instrument?.State.Status != InstrumentStatus.Ready);
 
             Assert.AreEqual(SequenceStatus.Error, sequence?.Items.ElementAt(0).State.Status);
             Assert.AreEqual(SequenceStatus.Finished, sequence?.Items.ElementAt(1).State.Status);
             Assert.AreEqual(SequenceStatus.Error, sequence?.Items.ElementAt(2).State.Status);
             Assert.AreEqual(SequenceStatus.Finished, sequence?.Items.ElementAt(3).State.Status);
-
-            Assert.AreEqual(InstrumentStatus.NotReady, instrument?.State.Status);
         }
 
     }
