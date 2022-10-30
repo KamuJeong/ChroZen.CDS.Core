@@ -4,12 +4,12 @@
                                                     where TArgs : EventArgs
     {
         private readonly WeakReference<TSub> subscriber;
-        private readonly EventHandler<TArgs> handler;
+        private readonly Action<TSub, object?, TArgs> handler;
         private readonly Action<EventHandler<TArgs>> unsubscribe;
         private readonly SynchronizationContext? synchronizationContext;
 
         public WeakEventSubscriber(TSub subscriber,
-                                        EventHandler<TArgs> handler,
+                                        Action<TSub, object?, TArgs> handler,
                                         Action<EventHandler<TArgs>> subscribe,
                                         Action<EventHandler<TArgs>> unsubscribe)
         {
@@ -21,13 +21,15 @@
             subscribe(Handler);
         }
 
+        public void Unsubscribe() => unsubscribe(Handler);
+
         private void Handler(object? sender, TArgs args)
         {
             void PostHandler(object? e)
             {
-                if (e is Tuple<object?, TArgs> v)
+                if (e is Tuple<TSub, object?, TArgs> v)
                 {
-                    handler(v.Item1, v.Item2);
+                    handler(v.Item1, v.Item2, v.Item3);
                 }
             }
 
@@ -35,11 +37,11 @@
             {
                 if (synchronizationContext != null && synchronizationContext != SynchronizationContext.Current)
                 {
-                    synchronizationContext.Post(new SendOrPostCallback(PostHandler), new Tuple<object?, TArgs>(sender, args));
+                    synchronizationContext.Post(new SendOrPostCallback(PostHandler), new Tuple<TSub, object?, TArgs>(sub, sender, args));
                 }
                 else
                 {
-                    handler(sender, args);
+                    handler(sub, sender, args);
                 }
             }
             else
