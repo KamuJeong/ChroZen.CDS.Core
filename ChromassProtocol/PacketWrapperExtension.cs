@@ -32,12 +32,12 @@ namespace ChromassProtocol
             Marshal.StructureToPtr(wrapper.Packet, ptr, false);
 
             Marshal.Copy(ptrHead, arr, 0, 24);
-            Marshal.Copy(ptr, arr, 24, size);
+            Marshal.Copy(ptr + head.SlotOffset, arr, 24, head.SlotSize);
 
             Marshal.FreeHGlobal(ptrHead);
             Marshal.FreeHGlobal(ptr);
 
-            return arr;
+            return arr.Take(head.Length).ToArray();
         }
 
         public static byte[] ToBytes<T>(this PacketWrapper<T> wrapper) where T : struct
@@ -79,7 +79,7 @@ namespace ChromassProtocol
                 throw new ArgumentOutOfRangeException();
 
             var dest = new Span<byte>(assemble, offset, slot.Length);
-            slot.Slice(offset, slot.Length).CopyTo(dest);
+            slot.CopyTo(dest);
 
             wrapper.Update(caller, assemble, index);
         }
