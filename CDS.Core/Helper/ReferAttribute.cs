@@ -13,12 +13,17 @@ namespace CDS.Core
     public class ReferAttribute : Attribute
     {
         public string Key { get; }
-        public Type Type { get; }
+        public Type? Type;
 
         public ReferAttribute(string key, Type type)
         {
             Key = key;
             Type = type;
+        }
+
+        public ReferAttribute(string key)
+        {
+            Key = key;
         }
     }
 
@@ -28,9 +33,17 @@ namespace CDS.Core
         {
             try
             {
-                return obj.GetType().GetCustomAttributes<ReferAttribute>()
+                var refAttr = obj.GetType().GetCustomAttributes<ReferAttribute>()
                     .Where(a => a.Key == key)
-                    .FirstOrDefault()?.Type?.GetConstructor(types)?.Invoke(para);
+                    .FirstOrDefault();
+
+                if(refAttr != null)
+                {
+                    return refAttr.Type?.GetConstructor(types)?.Invoke(para) ?? 
+                        obj.GetType().GetProperty(key, BindingFlags.Public|BindingFlags.Static)?.GetValue(null);
+                }
+
+                return null;
             }
             catch
             {

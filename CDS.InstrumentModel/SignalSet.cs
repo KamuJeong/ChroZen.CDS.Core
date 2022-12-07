@@ -20,5 +20,19 @@ namespace CDS.InstrumentModel
         public string? Unit { get; set; } 
         public TimeSpan Time { get; set; }
         public double Hz { get; set; } = 1.0;
+
+        private List<(DateTime dt, double value, bool acquire)> Data = new();
+
+        public void WriteData(double value, bool acquire = false)
+        {
+            Data.Add((DateTime.Now, value, acquire));
+        }
+
+        internal IReadOnlyList<(DateTime dt, double value, bool acquire)> GetData()
+        {
+            IReadOnlyList<(DateTime dt, double value, bool acquire)> data = Data;
+            Data = new();
+            return data;
+        }
     }
 }

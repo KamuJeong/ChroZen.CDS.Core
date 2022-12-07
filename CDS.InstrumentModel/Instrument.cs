@@ -82,7 +82,7 @@ namespace CDS.InstrumentModel
         public IEnumerable<Device> Devices => FindChildren<Device>(null);
         IEnumerable<IDevice> IInstrument.Devices => Devices;
 
-        public IEnumerable<SignalSet> Signals => FindChildren<SignalSet>(null);
+        public IEnumerable<SignalSet> Signals => FindChildrenRecursively<SignalSet>(null).OrderBy(s => s.Index);
         IEnumerable<ISignalSet> IInstrument.Signals => Signals;
 
         public async Task<bool> ConnectAsync()
