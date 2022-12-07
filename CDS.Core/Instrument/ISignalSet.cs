@@ -10,6 +10,7 @@ namespace CDS.Core
     {
         bool Use { get; set; }
         int Index { get; set; }
+        string? Name { get; }
         IDevice? Device { get; }
         int Channel { get; }
         string? Unit { get; }

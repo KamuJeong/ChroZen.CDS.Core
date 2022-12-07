@@ -6,6 +6,8 @@
 
         event EventHandler<InstrumentStatus>? StatusChanged;
 
+        string? Name { get; }
+
         IEnumerable<IDevice> Devices { get; }
         IEnumerable<ISignalSet> Signals { get; }
 

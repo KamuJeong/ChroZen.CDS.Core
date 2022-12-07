@@ -9,9 +9,11 @@ namespace CDS.Core
 {
     public interface IDevice
     {
-        String? SerialNumber { get; }
+        string? Name { get; }
+
+        string? SerialNumber { get; }
         Uri? Uri { get; }
-        String? Model { get; }       
+        string? Model { get; }       
 
         DeviceStatus Status { get; }
 
