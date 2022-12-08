@@ -8,6 +8,7 @@ namespace CDS.InstrumentModel
 {
     public sealed class DeviceChannel
     {
+        public string? Name { get; init; }
         public string? Unit { get; init; }
         public double[]? AvailableHz { get; init; }
     }

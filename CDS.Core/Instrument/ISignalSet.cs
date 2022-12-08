@@ -12,7 +12,7 @@ namespace CDS.Core
         int Index { get; }
         string? Name { get; }
         IDevice? Device { get; }
-        int Channel { get; }
+        string? Channel { get; }
         string? Unit { get; }
         TimeSpan Time { get; set; }
         double Hz { get; set; }
