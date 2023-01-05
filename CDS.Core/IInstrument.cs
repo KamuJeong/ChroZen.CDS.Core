@@ -4,7 +4,7 @@
     {
         IInstrumentState State { get; }
 
-        event EventHandler<InstrumentStatus>? StatusChanged;
+        event EventHandler<InstrumentStatusChangedArgs>? StatusChanged;
 
         string? Name { get; }
 

@@ -1,27 +1,46 @@
-﻿namespace CDS.Core
+﻿using System.Reflection;
+
+namespace CDS.Core
 {
-    public sealed class WeakEventSubscriber<TSub, TArgs> where TSub : class
+    public sealed class WeakEventSubscriber<TPub, TSub, TArgs> where TPub: class 
+                                                    where TSub : class
                                                     where TArgs : EventArgs
     {
+        private readonly TPub publisher;
+        private readonly string eventName;
         private readonly WeakReference<TSub> subscriber;
         private readonly Action<TSub, object?, TArgs> handler;
-        private readonly Action<EventHandler<TArgs>> unsubscribe;
         private readonly SynchronizationContext? synchronizationContext;
 
-        public WeakEventSubscriber(TSub subscriber,
-                                        Action<TSub, object?, TArgs> handler,
-                                        Action<EventHandler<TArgs>> subscribe,
-                                        Action<EventHandler<TArgs>> unsubscribe)
+        public WeakEventSubscriber(TPub publisher, 
+                                    string eventName,
+                                    TSub subscriber,
+                                    Action<TSub, object?, TArgs> handler)
         {
+            this.publisher = publisher;
+            this.eventName = eventName;
             this.subscriber = new WeakReference<TSub>(subscriber, false);
             this.handler = handler;
-            this.unsubscribe = unsubscribe;
             synchronizationContext = SynchronizationContext.Current;
 
-            subscribe(Handler);
+            Subscriber();
         }
 
-        public void Unsubscribe() => unsubscribe(Handler);
+        private void Subscriber()
+        {
+            if(publisher.GetType().GetEvent(eventName) is EventInfo evt)
+            {
+                evt.AddEventHandler(publisher, new EventHandler<TArgs>(Handler));
+            }
+        }
+
+        public void Unsubscribe()
+        {
+            if (publisher.GetType().GetEvent(eventName) is EventInfo evt)
+            {
+                evt.RemoveEventHandler(publisher, new EventHandler<TArgs>(Handler));
+            }
+        }
 
         private void Handler(object? sender, TArgs args)
         {
@@ -46,7 +65,7 @@
             }
             else
             {
-                unsubscribe(Handler);
+                Unsubscribe();
             }
         }
     }

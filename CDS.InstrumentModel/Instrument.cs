@@ -1,4 +1,5 @@
 ﻿using CDS.Core;
+using System.Reflection.Metadata;
 
 namespace CDS.InstrumentModel
 {
@@ -11,13 +12,13 @@ namespace CDS.InstrumentModel
         public InstrumentState State { get; } = new InstrumentState();
         IInstrumentState IInstrument.State => State;
 
-        public event EventHandler<InstrumentStatus>? StatusChanged;
+        public event EventHandler<InstrumentStatusChangedArgs>? StatusChanged;
         internal void InvokeStatusChangedEvent(object sender, InstrumentStatus oldStatus = InstrumentStatus.None)
         {
-            StatusChanged?.Invoke(sender, oldStatus);
-
             if (sender is Device device)
             {
+                StatusChanged?.Invoke(sender, new InstrumentStatusChangedArgs(State.Status));
+
                 if (device.Status == DeviceStatus.Error)
                 {
                     foreach (var d in Devices)
@@ -58,6 +59,10 @@ namespace CDS.InstrumentModel
                     }
                 }
             }
+            else
+            {
+                StatusChanged?.Invoke(sender, new InstrumentStatusChangedArgs(oldStatus));
+            }
         }
 
         private void ChangeStatus(InstrumentStatus status)
@@ -85,12 +90,32 @@ namespace CDS.InstrumentModel
         public IEnumerable<SignalSet> Signals => FindChildrenRecursively<SignalSet>(null).OrderBy(s => s.Index);
         IEnumerable<ISignalSet> IInstrument.Signals => Signals;
 
+        private TimeSpan signalWindow = TimeSpan.FromMinutes(10.0);
+        public TimeSpan SignalWindow
+        {
+            get => new TimeSpan[] { signalWindow, TotalRunTime }.Max();
+            set => signalWindow = value;
+        }
+
         public async Task<bool> ConnectAsync()
         {
             ChangeStatus(InstrumentStatus.NotReady);
 
+            foreach (var sig in Signals)
+            {
+                sig.SignalUpdated += Sig_SignalUpdated;
+            }
+
             return (await Task.WhenAll(Devices.Select(d => d.ConnectAsyncWrap()))).All(r => r);
         }
+
+        private void Sig_SignalUpdated(object? sender, SignalUpdatedArgs e)
+        {
+            SignalUpdated?.Invoke(this, e);
+        }
+
+        public event EventHandler<SignalUpdatedArgs>? SignalUpdated;
+ 
 
         public void Disconnect()
         {
@@ -98,6 +123,11 @@ namespace CDS.InstrumentModel
 
             foreach (var d in Devices)
                 d.DisconnectWrap();
+
+            foreach (var sig in Signals)
+            {
+                sig.SignalUpdated -= Sig_SignalUpdated;
+            }
         }
 
         public void Halt()

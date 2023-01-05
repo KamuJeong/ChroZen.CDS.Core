@@ -59,7 +59,7 @@ namespace CDS.SequenceModel
             return false;
         }
 
-        private void OnInstrumentStatusChanged(object? sender, InstrumentStatus oldStatus)
+        private void OnInstrumentStatusChanged(object? sender, InstrumentStatusChangedArgs oldStatus)
         {
             if(sender is IInstrument instrument)
             {

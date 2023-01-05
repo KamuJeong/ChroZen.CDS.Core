@@ -12,6 +12,7 @@ namespace CDS.InstrumentModel
         public IChromatogram? Chromatogram { get; set; }
 
         internal DateTime _lastRunTime = DateTime.Today;
+        public DateTime LastRunTime => _lastRunTime;
         public TimeSpan ElapsedTime => DateTime.Now - _lastRunTime;
         public bool IsSingleShot { get; internal set; }
         public bool StopReserved { get; set; }

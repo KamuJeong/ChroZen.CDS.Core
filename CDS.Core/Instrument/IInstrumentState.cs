@@ -19,6 +19,16 @@ namespace CDS.Core
         Error,
     }
 
+    public class InstrumentStatusChangedArgs : EventArgs
+    {
+        public InstrumentStatus OldStatus { get; }
+
+        public InstrumentStatusChangedArgs(InstrumentStatus oldStatus)
+        {
+            OldStatus = oldStatus;
+        }
+    }
+
     public interface IInstrumentState
     {
         InstrumentStatus Status { get; }
@@ -32,6 +42,7 @@ namespace CDS.Core
         IProject? Project { get; }
         IChromatogram? Chromatogram { get; }
 
+        DateTime LastRunTime { get; }
         TimeSpan ElapsedTime { get; }
     }
 }
